@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pokedex</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="mobile.css" />
+    <link rel="stylesheet" href="/styles/fonts.css" />
+    <link rel="stylesheet" href="/styles/assets.css" />
+    <link rel="stylesheet" href="/styles/standard.css" />
+    <link rel="icon" href="/assets/img/favicon/pokedex2.svg" />
+  </head>
+  <body class="headerFooterColor" onclick="closeDialog(event)">
+    <div class="contentLimiter">
+      <dialog
+        id="picDialog"
+        aria-labelledby="dialogPictureTitel"
+        aria-describedby="PokemonDialog"
+        aria-haspopup="overlay"
+        class="pkmDialog"
+      ></dialog>
+
+      <main class="mainDirection">
+        <header class="headerPkm">
+          <img src="pokedexText.svg" alt="Pokemon Icon with SiteName">
+          <input
+            type="text"
+            id="inputPokemonName"
+            class="pokemonInputField"
+            value=""
+            placeholder="Pokemon Search"
+          />
+        </header>
+        <section
+          id="pokemonMasterCollector"
+          class="mainPokemonColor pokemonCollectorClass"
+        >
+          <div id="pokemonCard" class="pokemonCards">
+            <header class="headerPkmCard">
+              <div>#1</div>
+              <div class="pokemonName">Bulbasaur</div>
+            </header>
+
+            <img
+              class="pokemonPicture"
+              src="/assets/img/IMG_8490.png"
+              alt="Pokemon Picture"
+            />
+
+            <footer class="pokemonCardFooter">
+              <img
+                class="svgFooter"
+                src="/assets/img/favicon/pokedex2.svg"
+                alt="Pokemon features"
+              />
+            </footer>
+          </div>
+        </section>
+        <div class="buttonForMore">
+          <button class="btn">weiter Pokemons laden</button>
+        </div>
+
+        <footer class="headerFooterColor footerPokemon">
+          <div class="companyNameLogo">
+            <img
+              src="/assets/img/favicon/logo-2067396_1280.png"
+              class="personalLogo"
+              alt="personal Logo"
+            />
+            <div class="companyName">
+              <p class="companyFontBig">Stefan</p>
+              <p class="companyFontBig">Weidner</p>
+            </div>
+          </div>
+          <div class="companyFont">
+            <p>Stefan Weidner Design</p>
+          </div>
+        </footer>
+
+        <script src="./script.js"></script>
+        <script src="/scripts/db.js"></script>
+        <script src="/scripts/template.js"></script>
+      </main>
+    </div>
+  </body>
+</html>

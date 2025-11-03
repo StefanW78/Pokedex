@@ -1,0 +1,47 @@
+<svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 420 160"
+            width="200"
+            height="84"
+            role="img"
+            aria-labelledby="title desc"
+          >
+          <style>
+          .ball-top { fill: rgba(220, 30, 30, 0.8); }   /* halbtransparentes Rot */
+      .ball-bottom { fill: rgba(255, 255, 255, 0.8); } /* halbtransparentes Weiß */
+      .band { fill: rgba(30, 30, 30, 0.9); }
+      .outline { stroke: #111; stroke-width: 4; }
+      .center-ring { fill: rgba(255, 255, 255, 0.9); stroke: #222; stroke-width: 3; }
+      .center-core { fill: rgba(230, 230, 230, 0.9); stroke: #666; stroke-width: 2; }
+
+      text {
+        font-family: "Segoe UI", Arial, sans-serif;
+        font-weight: 700;
+        font-size: 46px;
+        fill: white;
+      }
+          </style>
+            <defs>
+              <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur
+                  in="SourceAlpha"
+                  stdDeviation="4"
+                  result="blur"
+                />
+                <feOffset in="blur" dx="0" dy="3" result="off" />
+                <feMerge>
+                  <feMergeNode in="off" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+            <g transform="translate(100,80)" filter="url(#shadow)">
+              <path class="ball-bottom" d="M-56 0 A56 56 0 0 0 56 0 Z" />
+              <path class="ball-top" d="M-56 0 A56 56 0 0 1 56 0 Z" />
+              <rect class="band" x="-56" y="-8" width="112" height="16" />
+              <circle class="outline" cx="0" cy="0" r="56" fill="none" />
+              <circle class="center-ring" cx="0" cy="0" r="20" />
+              <circle class="center-core" cx="0" cy="0" r="9" />
+            </g>
+            <text x="190" y="95">Pokedex</text>
+          </svg>

@@ -1,0 +1,214 @@
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: "Comic_Relief";
+  font-style: normal;
+  font-weight: 200;
+  src: url("./Comic_Relief/ComicRelief-Regular.ttf") format("ttf"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+/* raleway-300 - latin */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: "Comic_Relief";
+  font-style: bold;
+  font-weight: 300;
+  src: url("./Comic_Relief/ComicRelief-Bold.ttf") format("ttf"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+.mainFont {
+  font-family: "Comic_Relief", sans-serif;
+  font-style: italic;
+}
+
+.mainDirection {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.pokemonGalerieSection {
+  flex: 1;
+}
+
+.headerFooterColor {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.mainPokemonColor {
+  background-color: var(--secondary-color);
+  color: white;
+  height: auto;
+}
+.headerPkm {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 50px;
+  top: 0;
+  left: 0;
+  height: 82px;
+  width: auto;
+}
+
+.centerItems {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.description {
+  padding: 64px 0;
+  height: auto;
+}
+
+.personalLogo {
+  width: 46px;
+  height: 46px;
+}
+
+.footerPokemon {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 0;
+  height: 100px;
+}
+
+.companyNameLogo {
+  display: flex;
+  margin-bottom: 12px;
+  gap: 6px;
+}
+
+.companyFont {
+  font-family: Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-size: 10px;
+}
+
+.companyFontBig {
+  font-family: Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-size: 20px;
+}
+
+.pokemonCollectorClass {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 0 8px;
+}
+
+dialog.opened::backdrop {
+  background-color: black;
+  opacity: 0.5;
+  transition: all 0.125s ease-in;
+}
+
+dialog.opened {
+  width: 624px; /* oder 100% */
+  height: 424px;
+  background-color: cadetblue;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.125s ease-in;
+}
+
+.dialogDiv {
+  width: 622px;
+  height: 422px;
+  display: flex;
+  flex-direction: column;
+}
+
+.imgSection {
+  width: 100%;
+  height: 100%;
+  margin: 16px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.dialogPicture {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover; /* oder 'contain' testen */
+  border-radius: 8px;
+}
+
+.pokemonCards{
+  max-width: 200px;
+  max-height: 200px;
+  overflow: hidden;
+  border-radius: 10px;
+  background-color: var(--primary-color);
+  margin: 10px;
+}
+
+.pokemonCards:hover {
+  border: 2px solid rgb(0, 200, 255);
+  filter: drop-shadow(0 0 8px blue);
+  cursor: pointer;
+}
+
+.headerPkmCard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  padding: 4px 0;
+}
+
+.headerPkmCard > div:first-child {
+  position: absolute;
+  left: 10px;
+}
+
+.pokemonPicture{
+  width: 100%;
+  height: 130px;
+  object-fit: cover;
+}
+
+.pokemonCardFooter{
+  display: flex;
+  justify-content: center;
+  height: 30px;
+}
+
+.svgFooter{
+  height: 30px;
+  width: 30px;
+}
+
+.buttonForMore {
+  width: 100%;
+  background-color: var(--secondary-color);
+  display: flex;
+  justify-content: center;
+  padding-bottom: 10px;
+}
+
+.btn{
+  background-color: blue;
+  color: white;
+  border: 2px solid blue;
+  border-radius: 10px;
+  width: 150px;
+}
+
+.btn:hover{
+  border: 2px solid rgb(0, 200, 255);
+  filter: drop-shadow(0 0 8px blue);
+  cursor: pointer;
+}

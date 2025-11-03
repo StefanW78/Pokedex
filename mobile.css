@@ -1,0 +1,17 @@
+@media(max-width: 610px){
+  dialog.opened {
+  width: 300px; /* oder 100% */
+  height: 200px;
+}
+
+.dialogDiv {
+  width: 316px;
+  height: 216px;
+}
+}
+@media(min-width: 1920px){
+.contentLimiter {
+  width: 1920px;
+  
+}
+}
