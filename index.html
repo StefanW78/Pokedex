@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="/styles/standard.css" />
     <link rel="icon" href="/assets/img/favicon/pokedex2.svg" />
   </head>
-  <body class="headerFooterColor" onclick="closeDialog(event)">
+  <body class="headerFooterColor" onload="init()" onclick="closeDialog(event)">
     <div class="contentLimiter">
       <dialog
         id="picDialog"
@@ -26,7 +26,7 @@
           <img src="pokedexText.svg" alt="Pokemon Icon with SiteName">
           <input
             type="text"
-            id="inputPokemonName"
+            id="pokemonInput"
             class="pokemonInputField"
             value=""
             placeholder="Pokemon Search"
@@ -58,7 +58,7 @@
           </div>
         </section>
         <div class="buttonForMore">
-          <button class="btn">weiter Pokemons laden</button>
+          <button id="loadBtn" class="btn">weitere Pokemons laden</button>
         </div>
 
         <footer class="headerFooterColor footerPokemon">
@@ -82,6 +82,5 @@
         <script src="/scripts/db.js"></script>
         <script src="/scripts/template.js"></script>
       </main>
-    </div>
   </body>
 </html>

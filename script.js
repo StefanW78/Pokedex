@@ -1,98 +1,78 @@
 const picContainer = document.getElementById("pokemonCollector");
 let picAim;
 let title;
-let number;
-let arrlength;
+let offset = 0;
+let length = 20;
+let arrlength =0;
+let pokemons = [];
+let BASE_URL = "https://pokeapi.co/api/v2/pokemon?limit=" + length+ "&offset="+offset;
 
 function init() {
   showArray();
 }
 
 function showArray() {
-  let contentRef = document.getElementById("pokemonCollector");
+  console.log("Url: " + BASE_URL);
+  
+  let contentRef = document.getElementById("pokemonMasterCollector");
   contentRef.innerHTML = ""; /* clear Field */
-
-  for (let index = 0; index < imgArray.length; index++) {
-    contentRef.innerHTML += getNoteTemplate(index);
+  
+  for (let index = 0; index < pokemons.length; index++) {
+    contentRef.innerHTML += getPokemonTemplate(index);
   }
 }
+// https://pokeapi.co/api/v2/pokemon?limit=20&offset=0
+async function loadData(path = "") {
+  let response = await fetch(BASE_URL + path + ".json");
+  return responseToJson = await response.json(); //hole nur noch das Object raus.
+}
 
-function getNoteTemplate(index) {
-  return `<div class="photoElement">
-        <img class="picture" tabindex="0" role="button" aria-haspopup="dialog" aria-controls="picDialog" data-info="${
-          index + 1
-        }" data-text1="${imgArray[index]}" src="/assets/img/${
-    imgArray[index]
-  }" alt="picture ${index + 1}" onclick="openDialog(event)">
-      
-    </div>`;
+function getPokemonTemplate(index) {
+  return `<header class="headerPkmCard">
+              <div>#${index}</div>
+              <div class="pokemonName">${pokemons[index]}</div>
+            </header>
+
+            <img
+              class="pokemonPicture"
+              src="${getPokemonPicture()}"
+              alt="Pokemon Picture"
+            />
+
+            <footer class="pokemonCardFooter">
+              <img
+                class="svgFooter"
+                src="/assets/img/favicon/pokedex2.svg"
+                alt="Pokemon features"
+              />
+            </footer>`;
 }
 
 function logDownPropagationPrevent(event) {
   event.stopPropagation();
 }
 
-picContainer.addEventListener("click", function (event) {
+/* picContainer.addEventListener("click", function (event) {
   event.stopPropagation();
   picAim = event.target.src;
   title = event.target.dataset.text1;
   number = event.target.dataset.info;
   arrlength = imgArray.length;
   showDialog(title, picAim, number, arrlength);
-});
-
-function foreward() {
-  number = parseInt(number);
-  if (number === arrlength) {
-    number = 0;
-  }
-  title = imgArray[number];
-  picAim = `/assets/img/${title}`;
-  number += 1;
-  arrlength = imgArray.length;
-  showDialog(title, picAim, number, arrlength);
-}
-
-function backward() {
-  number = parseInt(number);
-  if (number === 1) {
-    number = arrlength + 1;
-  }
-  let index = number - 1,
-    title = imgArray[index - 1];
-  picAim = `/assets/img/${title}`;
-  number -= 1;
-  arrlength = imgArray.length;
-  showDialog(title, picAim, number, arrlength);
-}
+}); */
 
 function showDialog(title, target, number, arrlength) {
-  let contentRef = document.getElementById("picDialog");
+  let contentRef = document.getElementById("pokemonDialog");
   contentRef.innerHTML = ""; /* Immer leeren bevor es losgeht!!! */
 
   contentRef.innerHTML = getDialogTemplate(title, target, number, arrlength);
 }
 
 function getDialogTemplate(title, target, number, arrlength) {
-  return `<div id="photoDialog" class="dialogDiv" onclick="clickPrevention(event)">
-            <header class="picName" onclick="clickPrevention(event)">
-              <h2 id="dialogPictureTitel">${title}</h2>
-              <button tabindex="0" aria-label="Dialog schließen" onclick="closeDialog(event)">Schließen</button>
-            </header>
-            <section class="imgSection">
-              <img class="dialogPicture" src="${target}" alt="Photo" onclick="clickPrevention(event)">
-            </section>
-            <footer class="picName" onclick="clickPrevention(event)">
-              <nav class="picName">
-                <button tabindex="0" onclick="backward()">Rückwärts</button>
-                <p id="countWithTotal">${number}/${arrlength}</p>
-                <button tabindex="0" onclick="foreward()">Vorwärts</button>
-              </nav>
-            </footer>
-      </div>`;
+  return 
 }
 
-const dialogRef = document.getElementById("picDialog");
+const dialogRef = document.getElementById("pokemonDialog");
 
 function openDialog(event) {
   dialogRef.showModal();
