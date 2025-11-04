@@ -12,6 +12,9 @@
     <link rel="icon" href="/assets/img/favicon/pokedex2.svg" />
   </head>
   <body class="headerFooterColor" onload="init()" onclick="closeDialog(event)">
+    <div id="overlay">
+      <div class="spinner"></div>
+    </div>
     <div class="contentLimiter">
       <dialog
         id="picDialog"
@@ -23,7 +26,7 @@
 
       <main class="mainDirection">
         <header class="headerPkm">
-          <img src="pokedexText.svg" alt="Pokemon Icon with SiteName">
+          <img src="pokedexText.svg" alt="Pokemon Icon with SiteName" />
           <input
             type="text"
             id="pokemonInput"
@@ -32,6 +35,9 @@
             placeholder="Pokemon Search"
           />
         </header>
+        <h1>Pokémon Daten</h1>
+        <div id="status"></div>
+        <div id="pokemonContainer"></div>
         <section
           id="pokemonMasterCollector"
           class="mainPokemonColor pokemonCollectorClass"
@@ -82,5 +88,6 @@
         <script src="/scripts/db.js"></script>
         <script src="/scripts/template.js"></script>
       </main>
+    </div>
   </body>
 </html>

@@ -29,6 +29,54 @@
   flex: 1;
 }
 
+#status {
+  font-family: Arial, sans-serif;
+  margin: 10px;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+#overlay {
+  position: fixed;          /* bleibt an Ort und Stelle */
+  top: 0;
+  left: 0;
+  width: 100vw;             /* ganze Bildschirmbreite */
+  height: 100vh;            /* ganze Bildschirmhöhe */
+  background-color: rgba(0, 0, 0, 0.5); /* halbtransparenter dunkler Hintergrund */
+  display: flex;            /* flexbox zum Zentrieren */
+  justify-content: center;  /* horizontal zentriert */
+  align-items: center;      /* vertikal zentriert */
+  z-index: 9999;            /* liegt über allem anderen */
+}
+
+.spinner {
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #3498db;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading {
+  color: blue;
+}
+.success {
+  color: green;
+}
+.error {
+  color: red;
+}
+
 .headerFooterColor {
   background-color: var(--primary-color);
   color: white;
@@ -118,7 +166,7 @@ dialog.opened {
   border-radius: 8px;
 }
 
-.pokemonCards{
+.pokemonCards {
   max-width: 200px;
   max-height: 200px;
   overflow: hidden;
@@ -146,19 +194,19 @@ dialog.opened {
   left: 10px;
 }
 
-.pokemonPicture{
+.pokemonPicture {
   width: 100%;
   height: 130px;
   object-fit: cover;
 }
 
-.pokemonCardFooter{
+.pokemonCardFooter {
   display: flex;
   justify-content: center;
   height: 30px;
 }
 
-.svgFooter{
+.svgFooter {
   height: 30px;
   width: 30px;
 }
@@ -171,7 +219,7 @@ dialog.opened {
   padding-bottom: 10px;
 }
 
-.btn{
+.btn {
   background-color: blue;
   color: white;
   border: 2px solid blue;
@@ -179,7 +227,7 @@ dialog.opened {
   width: 150px;
 }
 
-.btn:hover{
+.btn:hover {
   border: 2px solid rgb(0, 200, 255);
   filter: drop-shadow(0 0 8px blue);
   cursor: pointer;
