@@ -11,19 +11,11 @@
     <link rel="stylesheet" href="/styles/standard.css" />
     <link rel="icon" href="/assets/img/favicon/pokedex2.svg" />
   </head>
-  <body class="headerFooterColor" onload="init()" onclick="closeDialog(event)">
-    <div id="overlay">
-      <div class="spinner"></div>
+  <body class="headerFooterColor" onload="init()">
+    <div id="overlay" class="overlay" style="display: none">
+      <span class="spinner"></span>
     </div>
     <div class="contentLimiter">
-      <dialog
-        id="picDialog"
-        aria-labelledby="dialogPictureTitel"
-        aria-describedby="PokemonDialog"
-        aria-haspopup="overlay"
-        class="pkmDialog"
-      ></dialog>
-
       <main class="mainDirection">
         <header class="headerPkm">
           <img src="pokedexText.svg" alt="Pokemon Icon with SiteName" />
@@ -41,30 +33,9 @@
         <section
           id="pokemonMasterCollector"
           class="mainPokemonColor pokemonCollectorClass"
-        >
-          <div id="pokemonCard" class="pokemonCards">
-            <header class="headerPkmCard">
-              <div>#1</div>
-              <div class="pokemonName">Bulbasaur</div>
-            </header>
-
-            <img
-              class="pokemonPicture"
-              src="/assets/img/IMG_8490.png"
-              alt="Pokemon Picture"
-            />
-
-            <footer class="pokemonCardFooter">
-              <img
-                class="svgFooter"
-                src="/assets/img/favicon/pokedex2.svg"
-                alt="Pokemon features"
-              />
-            </footer>
-          </div>
-        </section>
+        ></section>
         <div class="buttonForMore">
-          <button id="loadBtn" class="btn">weitere Pokemons laden</button>
+          <button id="loadBtn" class="btn">weitere Pokémons laden</button>
         </div>
 
         <footer class="headerFooterColor footerPokemon">
@@ -88,6 +59,12 @@
         <script src="/scripts/db.js"></script>
         <script src="/scripts/template.js"></script>
       </main>
+    </div>
+    <div id="pokemonOverlay" class="overlay hidden">
+      <div class="overlayCard">
+        <button id="closeOverlay">✖</button>
+        <div id="overlayContent"></div>
+      </div>
     </div>
   </body>
 </html>

@@ -3,15 +3,15 @@
   font-family: "Comic_Relief";
   font-style: normal;
   font-weight: 200;
-  src: url("./Comic_Relief/ComicRelief-Regular.ttf") format("ttf"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+  src: url("/assets/fonts/Comic_Relief/ComicRelief-Regular.ttf") format("truetype"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
 /* raleway-300 - latin */
 @font-face {
   font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
   font-family: "Comic_Relief";
-  font-style: bold;
+  font-style: normal;
   font-weight: 300;
-  src: url("./Comic_Relief/ComicRelief-Bold.ttf") format("ttf"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+  src: url("/assets/fonts/Comic_Relief/ComicRelief-Bold.ttf") format("truetype"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
 
 .mainFont {
@@ -36,25 +36,82 @@
   border-radius: 8px;
 }
 
-#overlay {
-  position: fixed;          /* bleibt an Ort und Stelle */
+#pokemonOverlay.overlay {
+  position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;             /* ganze Bildschirmbreite */
-  height: 100vh;            /* ganze Bildschirmhöhe */
-  background-color: rgba(0, 0, 0, 0.5); /* halbtransparenter dunkler Hintergrund */
-  display: flex;            /* flexbox zum Zentrieren */
-  justify-content: center;  /* horizontal zentriert */
-  align-items: center;      /* vertikal zentriert */
-  z-index: 9999;            /* liegt über allem anderen */
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 9999;
+}
+
+.overlay.hidden {
+  display: none;
+}
+
+.hidden{
+  display: none !important;
+}
+
+.overlayCard {
+  background-color: #fff;
+  border-radius: 15px;
+  padding: 20px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.4);
+  position: relative;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+#closeOverlay {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.overlayTabs {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 15px;
+}
+
+.tabBtn {
+  padding: 8px 12px;
+  border: none;
+  background: #eee;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.tabBtn.active {
+  background-color: #3498db;
+  color: white;
+}
+
+.overlayTabContent {
+  margin-top: 10px;
+}
+
+.overlayTabContent.hidden {
+  display: none;
 }
 
 .spinner {
-  border: 6px solid #f3f3f3;
-  border-top: 6px solid #3498db;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
   border-radius: 50%;
-  width: 60px;
-  height: 60px;
+  width: 40px;
+  height: 40px;
   animation: spin 1s linear infinite;
 }
 
@@ -66,6 +123,12 @@
     transform: rotate(360deg);
   }
 }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 
 .loading {
   color: blue;
@@ -132,53 +195,22 @@
   padding: 0 8px;
 }
 
-dialog.opened::backdrop {
-  background-color: black;
-  opacity: 0.5;
-  transition: all 0.125s ease-in;
-}
-
-dialog.opened {
-  width: 624px; /* oder 100% */
-  height: 424px;
-  background-color: cadetblue;
-  border-radius: 16px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  transition: all 0.125s ease-in;
-}
-
-.dialogDiv {
-  width: 622px;
-  height: 422px;
-  display: flex;
-  flex-direction: column;
-}
-
-.dialogPicture {
-  width: 100%;
-  height: 100%;
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: cover; /* oder 'contain' testen */
-  border-radius: 8px;
-}
-
 .pokemonCards {
   max-width: 200px;
   max-height: 200px;
   overflow: hidden;
   border-radius: 10px;
+  border:2px solid blue;
   background-color: var(--primary-color);
   margin: 10px;
+  cursor: pointer;
 }
 
 .pokemonCards:hover {
-  border: 2px solid rgb(0, 200, 255);
+  border: 3px solid rgb(0, 200, 255);
   filter: drop-shadow(0 0 8px blue);
   cursor: pointer;
+  
 }
 
 .headerPkmCard {
@@ -187,6 +219,7 @@ dialog.opened {
   align-items: center;
   position: relative;
   padding: 4px 0;
+  background-color: var(--secondary-color);
 }
 
 .headerPkmCard > div:first-child {
@@ -204,6 +237,7 @@ dialog.opened {
   display: flex;
   justify-content: center;
   height: 30px;
+  background-color: var(--secondary-color);
 }
 
 .svgFooter {
