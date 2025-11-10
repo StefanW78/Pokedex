@@ -1,70 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pokedex</title>
     <link rel="stylesheet" href="styles.css" />
-    <link rel="stylesheet" href="mobile.css" />
-    <link rel="stylesheet" href="/styles/fonts.css" />
-    <link rel="stylesheet" href="/styles/assets.css" />
-    <link rel="stylesheet" href="/styles/standard.css" />
-    <link rel="icon" href="/assets/img/favicon/pokedex2.svg" />
   </head>
   <body class="headerFooterColor" onload="init()">
+
     <div id="overlay" class="overlay" style="display: none">
       <span class="spinner"></span>
     </div>
-    <div class="contentLimiter">
-      <main class="mainDirection">
-        <header class="headerPkm">
-          <img src="pokedexText.svg" alt="Pokemon Icon with SiteName" />
-          <input
-            type="text"
-            id="pokemonInput"
-            class="pokemonInputField"
-            value=""
-            placeholder="Pokemon Search"
-          />
-        </header>
-        <h1>Pokémon Daten</h1>
-        <div id="status"></div>
-        <div id="pokemonContainer"></div>
-        <section
-          id="pokemonMasterCollector"
-          class="mainPokemonColor pokemonCollectorClass"
-        ></section>
-        <div class="buttonForMore">
-          <button id="loadBtn" class="btn">weitere Pokémons laden</button>
-        </div>
 
-        <footer class="headerFooterColor footerPokemon">
-          <div class="companyNameLogo">
-            <img
-              src="/assets/img/favicon/logo-2067396_1280.png"
-              class="personalLogo"
-              alt="personal Logo"
-            />
-            <div class="companyName">
-              <p class="companyFontBig">Stefan</p>
-              <p class="companyFontBig">Weidner</p>
-            </div>
-          </div>
-          <div class="companyFont">
-            <p>Stefan Weidner Design</p>
-          </div>
-        </footer>
+    <main class="mainDirection">
+      <header class="headerPkm">
+        <img src="pokedexText.svg" alt="Pokedex Logo" />
+        <div class="searchContainer">
+  <input
+    type="text"
+    id="pokemonInput"
+    class="pokemonInputField"
+    placeholder="Pokémon suchen..."
+    autocomplete="off"
+  />
+  <ul id="suggestionList"></ul>
+</div>
+      </header>
 
-        <script src="./script.js"></script>
-        <script src="/scripts/db.js"></script>
-        <script src="/scripts/template.js"></script>
-      </main>
-    </div>
+      <h1>Pokémon Galerie</h1>
+      <div id="status"></div>
+
+      <section
+        id="pokemonMasterCollector"
+        class="mainPokemonColor pokemonCollectorClass"
+      ></section>
+
+      <div class="buttonForMore">
+        <button id="loadBtn" class="btn">weitere Pokémons laden</button>
+      </div>
+    </main>
+
     <div id="pokemonOverlay" class="overlay hidden">
       <div class="overlayCard">
         <button id="closeOverlay">✖</button>
         <div id="overlayContent"></div>
       </div>
     </div>
+
+    <script src="./script.js"></script>
   </body>
 </html>

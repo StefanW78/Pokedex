@@ -266,3 +266,33 @@
   filter: drop-shadow(0 0 8px blue);
   cursor: pointer;
 }
+
+.searchContainer {
+  position: relative;
+  width: 250px;
+}
+
+#suggestionList {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 4px 0 0;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 10;
+}
+
+#suggestionList li {
+  padding: 8px;
+  cursor: pointer;
+}
+
+#suggestionList li:hover {
+  background-color: #f0f0f0;
+}
