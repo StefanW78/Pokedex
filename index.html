@@ -4,10 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pokedex</title>
+    <link rel="stylesheet" href="styles/standard.css" />
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles/fonts.css" />
+    <link rel="stylesheet" href="styles/assets.css" />
+    <link rel="icon" href="./assets/icons/Favicon/pokedex2.svg">
   </head>
   <body class="headerFooterColor" onload="init()">
-
     <div id="overlay" class="overlay" style="display: none">
       <span class="spinner"></span>
     </div>
@@ -16,17 +19,17 @@
       <header class="headerPkm">
         <img src="pokedexText.svg" alt="Pokedex Logo" />
         <div class="searchContainer">
-  <input
-    type="text"
-    id="pokemonInput"
-    class="pokemonInputField"
-    placeholder="Pokémon suchen..."
-    autocomplete="off"
-  />
-  <ul id="suggestionList"></ul>
-</div>
+          <input
+            type="text"
+            id="pokemonInput"
+            class="pokemonInputField"
+            placeholder="Pokémon suchen..."
+            autocomplete="off"
+          />
+          <ul id="suggestionList" class="suggestionList"></ul>
+        </div>
       </header>
-      <div id="status"></div>
+      <div id="status" class="status"></div>
 
       <section
         id="pokemonMasterCollector"
@@ -34,17 +37,19 @@
       ></section>
 
       <div class="buttonForMore">
-        <button id="loadBtn" class="btn">weitere Pokémons laden</button>
+        <button type="button" id="loadBtn" class="btn">weitere Pokémons laden</button>
       </div>
     </main>
 
-    <div id="pokemonOverlay" class="overlay hidden">
+    <div id="pokemonOverlay" class="overlay hidden pokemonOverlay">
       <div class="overlayCard">
-        <button id="closeOverlay">✖</button>
+        <button id="closeOverlay" class="closeOverlay">✖</button>
         <div id="overlayContent"></div>
       </div>
     </div>
 
     <script src="./script.js"></script>
+    <script src="./scripts/db.js"></script>
+    <script src="./scripts/template.js"></script>
   </body>
 </html>

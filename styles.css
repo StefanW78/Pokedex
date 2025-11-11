@@ -1,83 +1,16 @@
-:root {
-  --primary-color: rgb(15, 35, 45, 1);
-  --secondary-color: rgb(9, 24, 32, 1);
+.overlay{
+    position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 9999;
 }
 
-/* Farbige Hintergründe pro Typ */
-/* 🌋 Element-Typ Farben (offizielle Farbpalette der Pokémon API) */
-.fire {
-  background-color: #EE8130;
-}
-
-.water {
-  background-color: #6390F0;
-}
-
-.grass {
-  background-color: #7AC74C;
-}
-
-.electric {
-  background-color: #F7D02C;
-}
-
-.ice {
-  background-color: #96D9D6;
-}
-
-.fighting {
-  background-color: #C22E28;
-}
-
-.poison {
-  background-color: #A33EA1;
-}
-
-.ground {
-  background-color: #E2BF65;
-}
-
-.flying {
-  background-color: #A98FF3;
-}
-
-.psychic {
-  background-color: #F95587;
-}
-
-.bug {
-  background-color: #A6B91A;
-}
-
-.rock {
-  background-color: #B6A136;
-}
-
-.ghost {
-  background-color: #735797;
-}
-
-.dragon {
-  background-color: #6F35FC;
-}
-
-.dark {
-  background-color: #705746;
-}
-
-.steel {
-  background-color: #B7B7CE;
-}
-
-.fairy {
-  background-color: #D685AD;
-}
-
-.normal {
-  background-color: blueviolet;
-}
-
-/* 🧩 Gemeinsames Styling für Typ-Icons im Footer */
 .pokemonCardFooter svg {
   width: 22px;
   height: 22px;
@@ -94,51 +27,24 @@
   border-radius: 0 0 12px 12px;
   padding: 6px;
   display: flex;
+  
   justify-content: center;
   align-items: center;
-}
-
-
-
-@font-face {
-  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
-  font-family: "Comic_Relief";
-  font-style: normal;
-  font-weight: 200;
-  src: url("/assets/fonts/Comic_Relief/ComicRelief-Regular.ttf") format("truetype"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
-}
-/* raleway-300 - latin */
-@font-face {
-  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
-  font-family: "Comic_Relief";
-  font-style: normal;
-  font-weight: 300;
-  src: url("/assets/fonts/Comic_Relief/ComicRelief-Bold.ttf") format("truetype"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
-}
-
-.mainFont {
-  font-family: "Comic_Relief", sans-serif;
-  font-style: italic;
-}
-
-.mainDirection {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
 }
 
 .pokemonGalerieSection {
   flex: 1;
 }
 
-#status {
+
+.status {
   font-family: Arial, sans-serif;
   margin: 10px;
   padding: 10px;
   border-radius: 8px;
 }
 
-#pokemonOverlay.overlay {
+.pokemonOverlay.overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -170,14 +76,16 @@
   animation: fadeIn 0.3s ease-in-out;
 }
 
-#closeOverlay {
+.closeOverlay {
   position: absolute;
   top: 10px;
   right: 10px;
+  color: red;
   background: transparent;
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
+  z-index: 999;
 }
 
 .overlayTabs {
@@ -495,7 +403,7 @@
   width: 250px;
 }
 
-#suggestionList {
+.suggestionList {
   position: absolute;
   top: 100%;
   left: 0;
@@ -511,11 +419,11 @@
   z-index: 10;
 }
 
-#suggestionList li {
+.suggestionList li {
   padding: 8px;
   cursor: pointer;
 }
 
-#suggestionList li:hover {
+.suggestionList li:hover {
   background-color: #f0f0f0;
 }
