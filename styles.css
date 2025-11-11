@@ -1,3 +1,105 @@
+:root {
+  --primary-color: rgb(15, 35, 45, 1);
+  --secondary-color: rgb(9, 24, 32, 1);
+}
+
+/* Farbige Hintergründe pro Typ */
+/* 🌋 Element-Typ Farben (offizielle Farbpalette der Pokémon API) */
+.fire {
+  background-color: #EE8130;
+}
+
+.water {
+  background-color: #6390F0;
+}
+
+.grass {
+  background-color: #7AC74C;
+}
+
+.electric {
+  background-color: #F7D02C;
+}
+
+.ice {
+  background-color: #96D9D6;
+}
+
+.fighting {
+  background-color: #C22E28;
+}
+
+.poison {
+  background-color: #A33EA1;
+}
+
+.ground {
+  background-color: #E2BF65;
+}
+
+.flying {
+  background-color: #A98FF3;
+}
+
+.psychic {
+  background-color: #F95587;
+}
+
+.bug {
+  background-color: #A6B91A;
+}
+
+.rock {
+  background-color: #B6A136;
+}
+
+.ghost {
+  background-color: #735797;
+}
+
+.dragon {
+  background-color: #6F35FC;
+}
+
+.dark {
+  background-color: #705746;
+}
+
+.steel {
+  background-color: #B7B7CE;
+}
+
+.fairy {
+  background-color: #D685AD;
+}
+
+.normal {
+  background-color: blueviolet;
+}
+
+/* 🧩 Gemeinsames Styling für Typ-Icons im Footer */
+.pokemonCardFooter svg {
+  width: 22px;
+  height: 22px;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 4px;
+  fill: white;
+}
+
+.pokemonCardFooter {
+  color: white;
+  font-weight: 500;
+  text-transform: capitalize;
+  border-radius: 0 0 12px 12px;
+  padding: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+
 @font-face {
   font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
   font-family: "Comic_Relief";
@@ -58,7 +160,7 @@
 }
 
 .overlayCard {
-  background-color: #fff;
+  background-color: var(--secondary-color);
   border-radius: 15px;
   padding: 20px;
   width: 90%;
@@ -105,6 +207,118 @@
 .overlayTabContent.hidden {
   display: none;
 }
+
+.pokemonInfoRow {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0;
+  font-size: 1rem;
+}
+
+.infoLabel {
+  flex: 1;
+  text-align: left;
+  font-weight: 600;
+  color: #ffffffcc; /* leicht transparentes Weiß */
+}
+
+.infoSeparator {
+  flex: 0 0 10px; /* fixe Breite für den Doppelpunkt */
+  text-align: center;
+}
+
+.infoValue {
+  flex: 2;
+  text-align: left;
+  color: #fff;
+}
+
+/* --- Layout für die Stats --- */
+.pokemonStats {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.statRow {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Zentriert den Startpunkt */
+  gap: 10px;
+  text-transform: capitalize;
+}
+
+/* Name der Eigenschaft (HP, Attack etc.) */
+.statLabel {
+  width: 100px;
+  text-align: right;
+  font-weight: bold;
+}
+
+/* Container für den Balken */
+.statBarContainer {
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.2);
+  height: 8px;
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Der eigentliche Balken */
+.statBar {
+  height: 100%;
+  background: linear-gradient(to right, #4CAF50, #8BC34A);
+  border-radius: 4px;
+  transform-origin: left center;
+}
+
+/* Zahl am Ende */
+.statValue {
+  width: 40px;
+  text-align: left;
+}
+
+.evolutionContainer {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.evolutionStage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stageName {
+  font-weight: bold;
+  text-transform: capitalize;
+  margin-bottom: 5px;
+}
+
+.stageContent {
+  display: flex;
+  align-items: center; /* Bild und Pfeil auf einer Linie */
+}
+
+.evolutionStage img {
+  width: 80px;   /* Bildgröße anpassen */
+  height: 80px;
+  object-fit: contain;
+}
+
+.evoArrow {
+  font-size: 1.5rem;
+  margin-left: 8px; /* Abstand zwischen Bild und Pfeil */
+}
+
+
 
 .spinner {
   border: 4px solid #f3f3f3;
@@ -233,16 +447,25 @@
   object-fit: cover;
 }
 
+.pokemonOverlayPicture {
+  height: 100%;
+}
+
 .pokemonCardFooter {
+    padding: 8px;
   display: flex;
   justify-content: center;
-  height: 30px;
+  align-items: center;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
   background-color: var(--secondary-color);
 }
 
-.svgFooter {
-  height: 30px;
-  width: 30px;
+.pokemonCardFooter svg {
+  width: 22px;
+  height: 22px;
+  fill: white;
+  border-radius: 50%;
 }
 
 .buttonForMore {
@@ -277,7 +500,7 @@
   top: 100%;
   left: 0;
   right: 0;
-  background: white;
+  background: rgb(100, 100, 100);
   border: 1px solid #ccc;
   border-radius: 8px;
   list-style: none;
