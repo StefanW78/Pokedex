@@ -1,5 +1,5 @@
 .overlay{
-    position: fixed;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -318,12 +318,12 @@
 }
 
 .pokemonCards {
-  max-width: 200px;
-  max-height: 200px;
+  min-width: 200px;
+  min-height: 200px;
   overflow: hidden;
   border-radius: 10px;
   border:2px solid blue;
-  background-color: var(--primary-color);
+  background-color: var(--secondary-color);
   margin: 10px;
   cursor: pointer;
 }
@@ -341,7 +341,7 @@
   align-items: center;
   position: relative;
   padding: 4px 0;
-  background-color: var(--secondary-color);
+  background-color: var(--primary-color);
 }
 
 .headerPkmCard > div:first-child {
@@ -360,13 +360,13 @@
 }
 
 .pokemonCardFooter {
-    padding: 8px;
+  padding: 8px;
   display: flex;
   justify-content: center;
   align-items: center;
   border-bottom-left-radius: 12px;
   border-bottom-right-radius: 12px;
-  background-color: var(--secondary-color);
+  background-color: var(--primary-color);
 }
 
 .pokemonCardFooter svg {

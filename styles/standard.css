@@ -1,12 +1,11 @@
 
 * {
-  
+  font-family: "Comic_Relief", sans-serif;
   box-sizing: border-box;
   scroll-behavior: smooth;
 }
 
 .mainFont {
-  font-family: "Comic_Relief", sans-serif;
   font-style: italic;
 }
 
