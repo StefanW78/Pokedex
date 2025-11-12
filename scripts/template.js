@@ -153,7 +153,11 @@ function getPokemonOverlayTemplate(pokemon, content) {
     <div class="overlayTabContent hidden" id="tab-evolution">
       <div class="evolutionContainer" id="evolutionContainer"></div>
     </div>
-
+    
+    <div class="tabNavigation">
+      <button class="navBtn" id="tabLeft">&laquo;</button>
+      <button class="navBtn" id="tabRight">&raquo;</button>
+    </div>
   `;
 }
 

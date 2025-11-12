@@ -1,10 +1,10 @@
 let offset = 0;
-const limit = 6;
+const limit = 20;
 let allPokemons = [];
 
 let allPokemonNames = [];
 
-const BASE_URL = "https://pokeapi.co/api/v2/pokemon?limit=6&offset=0";
+const BASE_URL = "https://pokeapi.co/api/v2/pokemon?limit=20&offset=0";
 
 async function init() {
   showOverlay();
@@ -74,6 +74,7 @@ async function openPokemonOverlay(pokemon) {
   const overlay = document.getElementById("pokemonOverlay");
   const content = document.getElementById("overlayContent");
   getPokemonOverlayTemplate(pokemon, content);
+  initOverlayTabs();
   overlay.classList.remove("hidden");
   loadEvolutionContainer(pokemon);
   const closeBtn = document.getElementById("closeOverlay");
@@ -238,3 +239,38 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 });
+
+function initOverlayTabs() {
+  const tabs = ["main", "stats", "evolution"];
+  const tabButtons = document.querySelectorAll(".tabBtn");
+  const tabContents = document.querySelectorAll(".overlayTabContent");
+
+  function showTab(tabName) {
+    tabButtons.forEach((btn) =>
+      btn.classList.toggle("active", btn.dataset.tab === tabName)
+    );
+    tabContents.forEach((content) =>
+      content.classList.toggle("hidden", content.id !== `tab-${tabName}`)
+    );
+  }
+
+  // Navigation-Pfeile
+  const leftBtn = document.getElementById("tabLeft");
+  const rightBtn = document.getElementById("tabRight");
+  let currentIndex = 0; // Start: "main"
+
+  function updateTab(index) {
+    currentIndex = (index + tabs.length) % tabs.length; // Schleife (rückwärts/vorwärts)
+    showTab(tabs[currentIndex]);
+  }
+
+  leftBtn.addEventListener("click", () => updateTab(currentIndex - 1));
+  rightBtn.addEventListener("click", () => updateTab(currentIndex + 1));
+
+  // Klicks auf Reiter synchronisieren
+  tabButtons.forEach((btn, index) =>
+    btn.addEventListener("click", () => updateTab(index))
+  );
+
+  showTab(tabs[currentIndex]);
+}
