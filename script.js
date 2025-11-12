@@ -6,6 +6,10 @@ let allPokemonNames = [];
 
 const BASE_URL = "https://pokeapi.co/api/v2/pokemon?limit=20&offset=0";
 
+const leftBtn = document.getElementById("tabLeft");
+const rightBtn = document.getElementById("tabRight");
+let currentIndex = 0;
+
 async function init() {
   showOverlay();
   allPokemons = await getAllPokemonDetails(BASE_URL);
@@ -70,14 +74,24 @@ function getPokemonCardTemplate(index, pokemon) {
   return getPokemonCards(index, pokemon, icon);
 }
 
-async function openPokemonOverlay(pokemon) {
+function getPokemonOverlayElements() {
   const overlay = document.getElementById("pokemonOverlay");
   const content = document.getElementById("overlayContent");
+  const closeBtn = document.getElementById("closeOverlay");
+  return {overlay, content, closeBtn};
+}
+
+function functionForPokemonOverlay(pokemon) {
+  loadEvolutionContainer(pokemon);
+  buttonHandling(pokemon);
+}
+
+async function openPokemonOverlay(pokemon) {
+  const {overlay, content, closeBtn} = getPokemonOverlayElements();
   getPokemonOverlayTemplate(pokemon, content);
   initOverlayTabs();
   overlay.classList.remove("hidden");
   loadEvolutionContainer(pokemon);
-  const closeBtn = document.getElementById("closeOverlay");
   closeBtn.onclick = () => closePokemonOverlay();
   overlay.onclick = (event) => {
     if (event.target === overlay) {
@@ -240,37 +254,29 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 });
 
+function getTabElements() {
+  return {
+    tabs: ["main", "stats", "evolution"],
+    tabButtons: document.querySelectorAll(".tabBtn"),
+    tabContents: document.querySelectorAll(".overlayTabContent"),
+    leftBtn: document.getElementById("tabLeft"),
+    rightBtn: document.getElementById("tabRight"),
+  };
+}
+
 function initOverlayTabs() {
-  const tabs = ["main", "stats", "evolution"];
-  const tabButtons = document.querySelectorAll(".tabBtn");
-  const tabContents = document.querySelectorAll(".overlayTabContent");
-
-  function showTab(tabName) {
-    tabButtons.forEach((btn) =>
-      btn.classList.toggle("active", btn.dataset.tab === tabName)
-    );
-    tabContents.forEach((content) =>
-      content.classList.toggle("hidden", content.id !== `tab-${tabName}`)
-    );
-  }
-
-  // Navigation-Pfeile
-  const leftBtn = document.getElementById("tabLeft");
-  const rightBtn = document.getElementById("tabRight");
-  let currentIndex = 0; // Start: "main"
-
-  function updateTab(index) {
-    currentIndex = (index + tabs.length) % tabs.length; // Schleife (rückwärts/vorwärts)
-    showTab(tabs[currentIndex]);
-  }
-
-  leftBtn.addEventListener("click", () => updateTab(currentIndex - 1));
-  rightBtn.addEventListener("click", () => updateTab(currentIndex + 1));
-
-  // Klicks auf Reiter synchronisieren
-  tabButtons.forEach((btn, index) =>
-    btn.addEventListener("click", () => updateTab(index))
-  );
-
+  const { tabs, tabButtons, tabContents, leftBtn, rightBtn } = getTabElements();
+  let currentIndex = 0;
+  const showTab = (tab) => {
+    tabButtons.forEach((b) => b.classList.toggle("active", b.dataset.tab === tab));
+    tabContents.forEach((c) => c.classList.toggle("hidden", c.id !== `tab-${tab}`));
+  };
+  const updateTab = (i) => showTab(tabs[(i + tabs.length) % tabs.length]);
+  leftBtn.addEventListener("click", () => updateTab(--currentIndex));
+  rightBtn.addEventListener("click", () => updateTab(++currentIndex));
+  tabButtons.forEach((b, i) => b.addEventListener("click", () => (currentIndex = i, showTab(tabs[i]))));
   showTab(tabs[currentIndex]);
 }
+
+
+

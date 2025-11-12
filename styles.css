@@ -332,7 +332,7 @@
   min-height: 200px;
   overflow: hidden;
   border-radius: 10px;
-  border:2px solid blue;
+  border:3px solid blue;
   background-color: var(--secondary-color);
   margin: 10px;
   cursor: pointer;
