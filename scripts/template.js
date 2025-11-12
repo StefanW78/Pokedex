@@ -72,3 +72,100 @@ const typeIcons = {
             <circle cx="12" cy="18" r="3" fill="white"/>
           </svg>`,
 };
+
+
+function getPokemonCards(index, pokemon, icon) {
+ return `
+    <div class="pokemonCards" data-index="${index}">
+      <header class="headerPkmCard">
+        <div>#${pokemon.id}</div>
+        <div class="pokemonName">${pokemon.name}</div>
+      </header>
+      <img class="pokemonPicture" src="${pokemon.image}" alt="${pokemon.name}">
+      <footer class="pokemonCardFooter ${pokemon.type}">
+        ${icon}
+      </footer>
+
+    </div>
+  `;
+}
+
+function getPokemonOverlayTemplate(pokemon, content) {
+  content.innerHTML = `
+    <div class="overlayHeader">
+      <header class="headerPkmCard">
+        <div>#${pokemon.id}</div>
+        <div class="pokemonName">${pokemon.name}</div>
+      </header>
+      <img class="pokemonOverlayPicture pokemonPicture ${pokemon.type}" src="${
+    pokemon.image
+  }" alt="${pokemon.name}">
+    </div>
+
+    <div class="overlayTabs">
+      <button class="tabBtn active" data-tab="main">Main</button>
+      <button class="tabBtn" data-tab="stats">Stats</button>
+      <button class="tabBtn" data-tab="evolution">Evolution</button>
+    </div>
+
+    <div class="overlayTabContent" id="tab-main">
+      <div class="pokemonInfoRow">
+    <span class="infoLabel">Height</span>
+    <span class="infoSeparator">:</span>
+    <span class="infoValue">${pokemon.height}</span>
+  </div>
+  <div class="pokemonInfoRow">
+    <span class="infoLabel">Weight</span>
+    <span class="infoSeparator">:</span>
+    <span class="infoValue">${pokemon.weight}</span>
+  </div>
+  <div class="pokemonInfoRow">
+    <span class="infoLabel">Base Experience</span>
+    <span class="infoSeparator">:</span>
+    <span class="infoValue">${pokemon.base_experience}</span>
+  </div>
+  <div class="pokemonInfoRow">
+    <span class="infoLabel">Abilities</span>
+    <span class="infoSeparator">:</span>
+    <span class="infoValue">${pokemon.abilities}</span>
+  </div>
+      
+    </div>
+    <div class="overlayTabContent hidden" id="tab-stats">
+      <div class="pokemonStats">
+  ${pokemon.stats
+    .map(
+      (s) => `
+    <div class="statRow">
+      <span class="statLabel">${s.stat.name}</span>
+      <div class="statBarContainer">
+        <div class="statBar" data-value="${s.base_stat}"></div>
+      </div>
+
+      <span class="statValue">${s.base_stat}</span>
+    </div>
+  `
+    )
+    .join("")}
+    </div>
+
+    </div>
+    <div class="overlayTabContent hidden" id="tab-evolution">
+      <div class="evolutionContainer" id="evolutionContainer"></div>
+    </div>
+
+  `;
+}
+
+function getEvolutionStageTemplate(evo, arrow) {
+  return `
+      <div class="evolutionStage">
+        <div class="stageName">${evo.name}</div>
+        <div class="stageContent">
+          <img src="${evo.image}" alt="${evo.name}">
+          ${arrow}
+        </div>
+      </div>
+    `;
+}
+

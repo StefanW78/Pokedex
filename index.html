@@ -8,7 +8,8 @@
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="styles/fonts.css" />
     <link rel="stylesheet" href="styles/assets.css" />
-    <link rel="icon" href="./assets/icons/Favicon/pokedex2.svg">
+    <link rel="stylesheet" href="styles/mobile.css" />
+    <link rel="icon" href="./assets/icons/Favicon/pokedex2.svg" />
   </head>
   <body class="headerFooterColor" onload="init()">
     <div id="overlay" class="overlay">
@@ -19,13 +20,18 @@
       <header class="headerPkm">
         <img src="pokedexText.svg" alt="Pokedex Logo" />
         <div class="searchContainer">
-          <input
-            type="text"
-            id="pokemonInput"
-            class="pokemonInputField"
-            placeholder="Pokémon suchen..."
-            autocomplete="off"
-          />
+          <div class="tooltipWrapper">
+            <input
+              type="text"
+              id="pokemonInput"
+              class="pokemonInputField"
+              placeholder="Pokémon suchen..."
+              autocomplete="off"
+            />
+            <span class="tooltipText"
+              >Bitte mindestens 3 Buchstaben eingeben</span
+            >
+          </div>
           <ul id="suggestionList" class="suggestionList"></ul>
         </div>
       </header>
@@ -37,8 +43,26 @@
       ></section>
 
       <div class="buttonForMore">
-        <button type="button" id="loadBtn" class="btn">weitere Pokémons laden</button>
+        <button type="button" id="loadBtn" class="btn">
+          weitere Pokémons laden
+        </button>
       </div>
+      <footer class="headerFooterPkmColor footerPkm">
+    <div class="companyNameLogo">
+      <img
+        src="assets/img/favicon/logo-2067396_1280.png"
+        class="personalLogo"
+        alt="personal Logo"
+      />
+      <div class="companyName">
+        <p class="companyFontBig">Stefan</p>
+        <p class="companyFontBig">Weidner</p>
+      </div>
+    </div>
+    <div class="companyFont">
+      <p>Stefan Weidner Design</p>
+    </div>
+  </footer>
     </main>
 
     <div id="pokemonOverlay" class="overlay hidden pokemonOverlay">
@@ -47,6 +71,7 @@
         <div id="overlayContent"></div>
       </div>
     </div>
+    
 
     <script src="./script.js"></script>
     <script src="./scripts/db.js"></script>

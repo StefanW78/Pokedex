@@ -13,9 +13,6 @@ async function init() {
   renderPokemonCards(allPokemons);
 }
 
-// --------------------------------------------------
-// Lade-Button (Pokémon nachladen)
-// --------------------------------------------------
 document.getElementById("loadBtn").addEventListener("click", async (e) => {
   const btn = e.target;
   btn.disabled = true;
@@ -35,60 +32,34 @@ document.getElementById("loadBtn").addEventListener("click", async (e) => {
   btn.textContent = "weitere Pokémons laden";
 });
 
-// --------------------------------------------------
-// Overlay anzeigen / verstecken
-// --------------------------------------------------
 function showOverlay() {
-  document.getElementById("overlay").style.display = "flex";
+  document.getElementById("overlay").classList.add("displayFlex");
 }
 
 function hideOverlay() {
-  document.getElementById("overlay").style.display = "none";
+  document.getElementById("overlay").classList.remove("displayFlex");
 }
 
-// --------------------------------------------------
-// Daten laden
-// --------------------------------------------------
 async function getAllPokemonDetails(BASE_URL) {
   const response = await fetch(BASE_URL);
   const { results } = await response.json();
-
   const detailedPokemons = await Promise.all(
     results.map(async (pokemon) => {
       const detailResponse = await fetch(pokemon.url);
       const data = await detailResponse.json();
-      return {
-        name: data.name,
-        id: data.id,
-        type: data.types[0].type.name,
-        image: data.sprites.other["official-artwork"].front_default,
-        stats: data.stats.map((s) => ({
-          stat: { name: s.stat.name },
-          base_stat: s.base_stat,
-        })),
-        height: data.height,
-        weight: data.weight,
-        base_experience: data.base_experience,
-        abilities: data.abilities.map((a) => a.ability.name).join(", "),
-      };
+      return dataInformation(data);
     })
   );
 
   return detailedPokemons;
 }
 
-// --------------------------------------------------
-// Karten anzeigen
-// --------------------------------------------------
 function renderPokemonCards(pokemonData) {
   const container = document.getElementById("pokemonMasterCollector");
   container.innerHTML = "";
-
   pokemonData.forEach((pokemon, index) => {
     container.innerHTML += getPokemonCardTemplate(index, pokemon);
   });
-
-  // Klick-Events für jedes Pokémon
   document.querySelectorAll(".pokemonCards").forEach((card, i) => {
     card.addEventListener("click", () => openPokemonOverlay(pokemonData[i]));
   });
@@ -96,160 +67,77 @@ function renderPokemonCards(pokemonData) {
 
 function getPokemonCardTemplate(index, pokemon) {
   const icon = typeIcons[pokemon.type] || "";
-
-  return `
-    <div class="pokemonCards" data-index="${index}">
-      <header class="headerPkmCard">
-        <div>#${pokemon.id}</div>
-        <div class="pokemonName">${pokemon.name}</div>
-      </header>
-      <img class="pokemonPicture" src="${pokemon.image}" alt="${pokemon.name}">
-      <footer class="pokemonCardFooter ${pokemon.type}">
-        ${icon}
-      </footer>
-
-    </div>
-  `;
+  return getPokemonCards(index, pokemon, icon);
 }
 
-// --------------------------------------------------
-// Overlay mit Details
-// --------------------------------------------------
 async function openPokemonOverlay(pokemon) {
   const overlay = document.getElementById("pokemonOverlay");
   const content = document.getElementById("overlayContent");
-
-  content.innerHTML = `
-    <div class="overlayHeader">
-      <header class="headerPkmCard">
-        <div>#${pokemon.id}</div>
-        <div class="pokemonName">${pokemon.name}</div>
-      </header>
-      <img class="pokemonOverlayPicture pokemonPicture ${pokemon.type}" src="${
-    pokemon.image
-  }" alt="${pokemon.name}">
-    </div>
-
-    <div class="overlayTabs">
-      <button class="tabBtn active" data-tab="main">Main</button>
-      <button class="tabBtn" data-tab="stats">Stats</button>
-      <button class="tabBtn" data-tab="evolution">Evolution</button>
-    </div>
-
-    <div class="overlayTabContent" id="tab-main">
-      <div class="pokemonInfoRow">
-    <span class="infoLabel">Height</span>
-    <span class="infoSeparator">:</span>
-    <span class="infoValue">${pokemon.height}</span>
-  </div>
-  <div class="pokemonInfoRow">
-    <span class="infoLabel">Weight</span>
-    <span class="infoSeparator">:</span>
-    <span class="infoValue">${pokemon.weight}</span>
-  </div>
-  <div class="pokemonInfoRow">
-    <span class="infoLabel">Base Experience</span>
-    <span class="infoSeparator">:</span>
-    <span class="infoValue">${pokemon.base_experience}</span>
-  </div>
-  <div class="pokemonInfoRow">
-    <span class="infoLabel">Abilities</span>
-    <span class="infoSeparator">:</span>
-    <span class="infoValue">${pokemon.abilities}</span>
-  </div>
-      
-    </div>
-    <div class="overlayTabContent hidden" id="tab-stats">
-      <div class="pokemonStats">
-  ${pokemon.stats
-    .map(
-      (s) => `
-    <div class="statRow">
-      <span class="statLabel">${s.stat.name}</span>
-      <div class="statBarContainer">
-        <div class="statBar"style="transform: scaleX(${s.base_stat / 200})"></div>
-      </div>
-
-      <span class="statValue">${s.base_stat}</span>
-    </div>
-  `
-    )
-    .join("")}
-</div>
-
-    </div>
-    <div class="overlayTabContent hidden" id="tab-evolution">
-      <div class="evolutionContainer" id="evolutionContainer"></div>
-    </div>
-
-  `;
-
+  getPokemonOverlayTemplate(pokemon, content);
   overlay.classList.remove("hidden");
-
-  // Evolution Chain mit await laden
-  const evoContainer = document.getElementById("evolutionContainer");
-  try {
-    const chain = await loadEvolutionChain(pokemon.id);
-    evoContainer.innerHTML = chain
-  .map((evo, index) => {
-    // Pfeil nur, wenn es nicht die letzte Stufe ist
-    const arrow = index < chain.length - 1 ? '<span class="evoArrow"> &gt;&gt; </span>' : '';
-    return `
-      <div class="evolutionStage">
-        <div class="stageName">${evo.name}</div>
-        <div class="stageContent">
-          <img src="${evo.image}" alt="${evo.name}">
-          ${arrow}
-        </div>
-      </div>
-    `;
-  })
-  .join("");
-
-
-  } catch (err) {
-    evoContainer.innerHTML = "<p>Keine Evolution Chain gefunden.</p>";
-    console.error(err);
-  }
-
-  // Restlicher Overlay-Code bleibt unverändert
+  loadEvolutionContainer(pokemon);
   const closeBtn = document.getElementById("closeOverlay");
   closeBtn.onclick = () => closePokemonOverlay();
-
   overlay.onclick = (event) => {
     if (event.target === overlay) {
       closePokemonOverlay();
     }
   };
+  buttonHandling(pokemon);
+}
 
+function closePokemonOverlay() {
+    document.getElementById("pokemonOverlay").classList.add("hidden");
+  }
+
+function buttonHandling(pokemon) {
   document.querySelectorAll(".tabBtn").forEach((btn) => {
     btn.addEventListener("click", () => switchTab(btn.dataset.tab));
   });
 
-  function closePokemonOverlay() {
-    document.getElementById("pokemonOverlay").classList.add("hidden");
+  document.querySelectorAll(".statBar").forEach((bar) => {
+    const value = bar.dataset.value;
+    bar.style.transform = `scaleX(${value / 200})`;
+  });
+}
+
+async function loadEvolutionContainer(pokemon){
+  const evoContainer = document.getElementById("evolutionContainer");
+  try {
+    const chain = await loadEvolutionChain(pokemon.id);
+    evoContainer.innerHTML = chain
+      .map((evo, index) => {
+        const arrow =
+          index < chain.length - 1
+            ? '<span class="evoArrow"> &gt;&gt; </span>'
+            : "";
+        return getEvolutionStageTemplate(evo, arrow);
+      })
+      .join("");
+  } catch (err) {
+    evoContainer.innerHTML = "<p>Keine Evolution Chain gefunden.</p>";
+    console.error(err);
   }
 }
 
 async function loadEvolutionChain(pokemonId) {
-  // 1. Species-Daten holen
-  const speciesRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemonId}/`);
+  const speciesRes = await fetch(
+    `https://pokeapi.co/api/v2/pokemon-species/${pokemonId}/`
+  );
   const speciesData = await speciesRes.json();
-
-  // 2. Evolution Chain abrufen
   const evoUrl = speciesData.evolution_chain.url;
   const evoRes = await fetch(evoUrl);
   const evoData = await evoRes.json();
-
-  // 3. Kette in Array auflösen
   const chain = [];
   let current = evoData.chain;
   while (current) {
     chain.push(current.species.name);
     current = current.evolves_to[0];
   }
+  return fetchEvoDetails(chain);
+}
 
-  // 4. Für jedes Stadium Bild holen
+async function fetchEvoDetails(chain) {
   const evoDetails = await Promise.all(
     chain.map(async (name) => {
       const pokeRes = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
@@ -260,12 +148,8 @@ async function loadEvolutionChain(pokemonId) {
       };
     })
   );
-
-  
-
   return evoDetails;
 }
-
 
 function switchTab(tabName) {
   document
@@ -279,10 +163,6 @@ function switchTab(tabName) {
   document.getElementById(`tab-${tabName}`).classList.remove("hidden");
 }
 
-// --------------------------------------------------
-// Pokémon-Suche + Autocomplete
-// --------------------------------------------------
-
 async function loadAllPokemonNames() {
   const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=1000");
   const data = await response.json();
@@ -292,30 +172,15 @@ async function loadAllPokemonNames() {
 async function searchPokemon(query) {
   const lowerQuery = query.toLowerCase().trim();
   showOverlay();
-
   try {
-    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${lowerQuery}`);
-
+    const response = await fetch(
+      `https://pokeapi.co/api/v2/pokemon/${lowerQuery}`
+    );
     if (!response.ok) {
       throw new Error("Pokémon nicht gefunden!");
     }
     const data = await response.json();
-
-    const pokemon = {
-      name: data.name,
-      id: data.id,
-      type: data.types[0].type.name,
-      image: data.sprites.other["official-artwork"].front_default,
-      stats: data.stats.map((s) => ({
-        stat: { name: s.stat.name },
-        base_stat: s.base_stat,
-      })),
-      height: data.height,
-      weight: data.weight,
-      base_experience: data.base_experience,
-      abilities: data.abilities.map((a) => a.ability.name).join(", "),
-    };
-
+    const pokemon = dataInformation(data);
     await openPokemonOverlay(pokemon);
   } catch (error) {
     alert("Kein Pokémon mit diesem Namen oder dieser ID gefunden!");
@@ -325,9 +190,6 @@ async function searchPokemon(query) {
   }
 }
 
-// --------------------------------------------------
-// DOM geladen → Autocomplete initialisieren
-// --------------------------------------------------
 document.addEventListener("DOMContentLoaded", async () => {
   await loadAllPokemonNames();
 
@@ -344,6 +206,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       .filter((name) => name.includes(query))
       .slice(0, 10);
 
+    matchesInPokemonNames(matches);
+  });
+
+  function matchesInPokemonNames(matches) {
     matches.forEach((name) => {
       const li = document.createElement("li");
       li.textContent = name;
@@ -351,11 +217,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         input.value = name;
         suggestionList.innerHTML = "";
         await searchPokemon(name);
-
       });
       suggestionList.appendChild(li);
     });
-  });
+  }
 
   input.addEventListener("keydown", async (event) => {
     if (event.key === "Enter") {

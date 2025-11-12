@@ -12,15 +12,13 @@
 .mainDirection {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: 90vh;
 }
 :root {
   --primary-color: rgb(15, 35, 45, 1);
   --secondary-color: rgb(9, 24, 32, 1);
 }
 
-/* Farbige Hintergründe pro Typ */
-/* 🌋 Element-Typ Farben (offizielle Farbpalette der Pokémon API) */
 .fire {
   background-color: #EE8130;
 }
@@ -93,3 +91,10 @@
   background-color: blueviolet;
 }
 
+.displayFlex{
+  display: flex;
+}
+
+.displayNone {
+  display: none;
+}
