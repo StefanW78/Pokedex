@@ -11,9 +11,9 @@ const rightBtn = document.getElementById("tabRight");
 let currentIndex = 0;
 
 async function init() {
-  showOverlay();
+  toggleOverlay();
   allPokemons = await getAllPokemonDetails(BASE_URL);
-  hideOverlay();
+  toggleOverlay();
   renderPokemonCards(allPokemons);
 }
 
@@ -25,23 +25,23 @@ document.getElementById("loadBtn").addEventListener("click", async (e) => {
   offset += limit;
   const newUrl = `https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`;
 
-  showOverlay();
+  toggleOverlay();
   const newPokemons = await getAllPokemonDetails(newUrl);
-  hideOverlay();
+   toggleOverlay();
 
-  allPokemons = [...allPokemons, ...newPokemons];
-  renderPokemonCards(allPokemons);
+  allPokemons.push(...newPokemons)
+  renderPokemonCards(newPokemons, true);
 
   btn.disabled = false;
   btn.textContent = "weitere Pokémons laden";
 });
 
-function showOverlay() {
-  document.getElementById("overlay").classList.add("displayFlex");
+function toggleOverlaySearchTextErr() {
+  document.getElementById("searchTextOverlay").classList.toggle("displayFlex");
 }
 
-function hideOverlay() {
-  document.getElementById("overlay").classList.remove("displayFlex");
+function toggleOverlay() {
+   document.getElementById("overlay").classList.toggle("displayFlex");
 }
 
 async function getAllPokemonDetails(BASE_URL) {
@@ -58,7 +58,25 @@ async function getAllPokemonDetails(BASE_URL) {
   return detailedPokemons;
 }
 
-function renderPokemonCards(pokemonData) {
+function renderPokemonCards(pokemonData, append = false) {
+  const container = document.getElementById("pokemonMasterCollector");
+
+  // Nur löschen, wenn append = false (z. B. bei init oder Filter)
+  if (!append) container.innerHTML = "";
+
+  pokemonData.forEach((pokemon, index) => {
+    const cardHTML = getPokemonCardTemplate(index, pokemon);
+    container.insertAdjacentHTML("beforeend", cardHTML);
+  });
+
+  // Event-Listener nur für neu hinzugefügte Karten setzen
+  document.querySelectorAll(".pokemonCards").forEach((card, i) => {
+    card.addEventListener("click", () => openPokemonOverlay(allPokemons[i]));
+  });
+}
+
+
+/* function renderPokemonCards(pokemonData) {
   const container = document.getElementById("pokemonMasterCollector");
   container.innerHTML = "";
   pokemonData.forEach((pokemon, index) => {
@@ -67,7 +85,20 @@ function renderPokemonCards(pokemonData) {
   document.querySelectorAll(".pokemonCards").forEach((card, i) => {
     card.addEventListener("click", () => openPokemonOverlay(pokemonData[i]));
   });
+} */
+
+function filterLoadedPokemons(query) {
+  const lowerQuery = query.toLowerCase().trim();
+  if (!lowerQuery) {
+    renderPokemonCards(allPokemons);
+    return;
+  }
+  const filtered = allPokemons.filter(pokemon =>
+    pokemon.name.toLowerCase().includes(lowerQuery)
+  );
+  renderPokemonCards(filtered);
 }
+
 
 function getPokemonCardTemplate(index, pokemon) {
   const icon = typeIcons[pokemon.type] || "";
@@ -78,7 +109,7 @@ function getPokemonOverlayElements() {
   const overlay = document.getElementById("pokemonOverlay");
   const content = document.getElementById("overlayContent");
   const closeBtn = document.getElementById("closeOverlay");
-  return {overlay, content, closeBtn};
+  return { overlay, content, closeBtn };
 }
 
 function functionForPokemonOverlay(pokemon) {
@@ -87,7 +118,7 @@ function functionForPokemonOverlay(pokemon) {
 }
 
 async function openPokemonOverlay(pokemon) {
-  const {overlay, content, closeBtn} = getPokemonOverlayElements();
+  const { overlay, content, closeBtn } = getPokemonOverlayElements();
   getPokemonOverlayTemplate(pokemon, content);
   initOverlayTabs();
   overlay.classList.remove("hidden");
@@ -102,8 +133,8 @@ async function openPokemonOverlay(pokemon) {
 }
 
 function closePokemonOverlay() {
-    document.getElementById("pokemonOverlay").classList.add("hidden");
-  }
+  document.getElementById("pokemonOverlay").classList.add("hidden");
+}
 
 function buttonHandling(pokemon) {
   document.querySelectorAll(".tabBtn").forEach((btn) => {
@@ -116,7 +147,7 @@ function buttonHandling(pokemon) {
   });
 }
 
-async function loadEvolutionContainer(pokemon){
+async function loadEvolutionContainer(pokemon) {
   const evoContainer = document.getElementById("evolutionContainer");
   try {
     const chain = await loadEvolutionChain(pokemon.id);
@@ -178,50 +209,68 @@ function switchTab(tabName) {
   document.getElementById(`tab-${tabName}`).classList.remove("hidden");
 }
 
-async function loadAllPokemonNames() {
-  const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=1000");
-  const data = await response.json();
-  allPokemonNames = data.results.map((p) => p.name.toLowerCase());
-}
-
 async function searchPokemon(query) {
-  const lowerQuery = query.toLowerCase().trim();
-  showOverlay();
+  const name = query.toLowerCase().trim();
+  toggleOverlay();
   try {
-    const response = await fetch(
-      `https://pokeapi.co/api/v2/pokemon/${lowerQuery}`
-    );
-    if (!response.ok) {
-      throw new Error("Pokémon nicht gefunden!");
-    }
-    const data = await response.json();
+    const data = await fetchPokemon(name);
     const pokemon = dataInformation(data);
     await openPokemonOverlay(pokemon);
-  } catch (error) {
-    alert("Kein Pokémon mit diesem Namen oder dieser ID gefunden!");
-    console.error(error);
+  } catch (err) {
+    handleSearchError(err);
   } finally {
-    hideOverlay();
+    toggleOverlay();
   }
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
-  await loadAllPokemonNames();
+async function fetchPokemon(name) {
+  const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
+  if (!res.ok) throw new Error("Pokémon nicht gefunden!");
+  return res.json();
+}
 
+function handleSearchError(err) {
+  toggleOverlay();
+  toggleOverlaySearchTextErr();
+  toggleOverlay();
+  console.error(err);
+}
+
+
+document.addEventListener("DOMContentLoaded", async () => {
+  closeOverlaySearchTextErrArea();
   const input = document.getElementById("pokemonInput");
   const suggestionList = document.getElementById("suggestionList");
-
   input.addEventListener("input", () => {
-    const query = input.value.toLowerCase().trim();
-    suggestionList.innerHTML = "";
+    input.addEventListener("input", () => {
+      const query = input.value.toLowerCase().trim();
+  suggestionList.innerHTML = "";
+  if (!query) {
+    renderPokemonCards(allPokemons);
+    return;
+  }
+  if (query.length < 3) return;
+  const filteredPokemons = allPokemons.filter(pokemon =>
+    pokemon.name.toLowerCase().includes(query)
+  );
+  if (filteredPokemons.length === 0) {
+    suggestionList.innerHTML = "<li>Kein Treffer</li>";
+    renderPokemonCards([]);
+    return;
+  }
+  filteredPokemons.forEach(pokemon => {
+    const li = document.createElement("li");
+    li.textContent = pokemon.name;
+    li.addEventListener("click", () => {
+      input.value = pokemon.name;
+      suggestionList.innerHTML = "";
+      openPokemonOverlay(pokemon);
+    });
+    suggestionList.appendChild(li);
+  });
+  renderPokemonCards(filteredPokemons);
+});
 
-    if (query.length < 2) return;
-
-    const matches = allPokemonNames
-      .filter((name) => name.includes(query))
-      .slice(0, 10);
-
-    matchesInPokemonNames(matches);
   });
 
   function matchesInPokemonNames(matches) {
@@ -237,15 +286,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  input.addEventListener("keydown", async (event) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      const query = input.value.toLowerCase().trim();
-      if (!query) return;
-      suggestionList.innerHTML = "";
-      await searchPokemon(query);
+  input.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    const query = input.value.toLowerCase().trim();
+    const filtered = allPokemons.filter(p =>
+      p.name.toLowerCase().includes(query)
+    );
+    if (filtered.length === 1) {
+      openPokemonOverlay(filtered[0]);
     }
-  });
+  }
+});
 
   document.addEventListener("click", (event) => {
     if (!event.target.closest(".searchContainer")) {
@@ -268,15 +320,31 @@ function initOverlayTabs() {
   const { tabs, tabButtons, tabContents, leftBtn, rightBtn } = getTabElements();
   let currentIndex = 0;
   const showTab = (tab) => {
-    tabButtons.forEach((b) => b.classList.toggle("active", b.dataset.tab === tab));
-    tabContents.forEach((c) => c.classList.toggle("hidden", c.id !== `tab-${tab}`));
+    tabButtons.forEach((b) =>
+      b.classList.toggle("active", b.dataset.tab === tab)
+    );
+    tabContents.forEach((c) =>
+      c.classList.toggle("hidden", c.id !== `tab-${tab}`)
+    );
   };
   const updateTab = (i) => showTab(tabs[(i + tabs.length) % tabs.length]);
   leftBtn.addEventListener("click", () => updateTab(--currentIndex));
   rightBtn.addEventListener("click", () => updateTab(++currentIndex));
-  tabButtons.forEach((b, i) => b.addEventListener("click", () => (currentIndex = i, showTab(tabs[i]))));
+  tabButtons.forEach((b, i) =>
+    b.addEventListener("click", () => ((currentIndex = i), showTab(tabs[i])))
+  );
   showTab(tabs[currentIndex]);
 }
 
-
-
+function closeOverlaySearchTextErr() {
+  toggleOverlaySearchTextErr();
+}
+function closeOverlaySearchTextErrArea() {
+  const overlayTextErr = document.getElementById("searchTextOverlay");
+  overlayTextErr.addEventListener("click", (event) => {
+    // nur schließen, wenn der graue Hintergrund (nicht die Karte) geklickt wird
+    if (event.target === overlayTextErr) {
+      toggleOverlaySearchTextErr();
+    }
+  });
+}

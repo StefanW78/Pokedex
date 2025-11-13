@@ -1,4 +1,4 @@
-.overlay{
+.overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -9,6 +9,10 @@
   justify-content: center;
   background-color: rgba(0, 0, 0, 0.6);
   z-index: 9999;
+}
+
+.contentLimiter {
+  width: 1440px;
 }
 
 .pokemonCardFooter svg {
@@ -27,7 +31,7 @@
   border-radius: 0 0 12px 12px;
   padding: 6px;
   display: flex;
-  
+
   justify-content: center;
   align-items: center;
 }
@@ -36,12 +40,19 @@
   flex: 1;
 }
 
-
 .status {
   font-family: Arial, sans-serif;
   margin: 10px;
   padding: 10px;
   border-radius: 8px;
+}
+.colorWhite {
+  color: white;
+}
+
+.paddingSearchErr {
+  display: block;
+  margin-right: 20px;
 }
 
 .pokemonOverlay.overlay {
@@ -61,7 +72,7 @@
   display: none;
 }
 
-.hidden{
+.hidden {
   display: none !important;
 }
 
@@ -71,7 +82,7 @@
   padding: 20px;
   width: 90%;
   max-width: 400px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.4);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
   position: relative;
   animation: fadeIn 0.3s ease-in-out;
 }
@@ -174,7 +185,7 @@
 
 .statBar {
   height: 100%;
-  background: linear-gradient(to right, #4CAF50, #8BC34A);
+  background: linear-gradient(to right, #4caf50, #8bc34a);
   border-radius: 4px;
   transform-origin: left center;
   transition: transform 0.6s ease;
@@ -207,28 +218,27 @@
 
 .stageContent {
   display: flex;
-  align-items: center; 
+  align-items: center;
 }
 
 .evolutionStage img {
-  width: 80px;   
+  width: 80px;
   height: 80px;
   object-fit: contain;
 }
 
 .evoArrow {
   font-size: 1.5rem;
-  margin-left: 8px; 
+  margin-left: 8px;
 }
 
-.displayFlex{
+.displayFlex {
   display: flex;
 }
 
 .displayNone {
   display: none;
 }
-
 
 .spinner {
   border: 4px solid #f3f3f3;
@@ -249,10 +259,15 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
-
 
 .loading {
   color: blue;
@@ -309,7 +324,6 @@
   align-items: center;
   margin-bottom: 12px;
   gap: 6px;
-
 }
 
 .companyName {
@@ -318,7 +332,6 @@
 }
 
 .pokemonCollectorClass {
-  
   display: flex;
   justify-content: center;
   align-items: center;
@@ -332,7 +345,7 @@
   min-height: 200px;
   overflow: hidden;
   border-radius: 10px;
-  border:3px solid blue;
+  border: 3px solid blue;
   background-color: var(--secondary-color);
   margin: 10px;
   cursor: pointer;
@@ -342,7 +355,6 @@
   border: 3px solid rgb(0, 200, 255);
   filter: drop-shadow(0 0 8px blue);
   cursor: pointer;
-  
 }
 
 .headerPkmCard {
@@ -436,6 +448,7 @@
 
 .suggestionList li:hover {
   background-color: #f0f0f0;
+  color: black;
 }
 
 .tooltipWrapper {
@@ -471,13 +484,13 @@
 }
 
 .footerPkm {
-  margin-top: auto; 
+  margin-top: auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 12px 0;
-  height: 100px;
+  height: 120px;
 }
 
 .personalLogo {

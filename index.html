@@ -12,69 +12,77 @@
     <link rel="icon" href="./assets/icons/Favicon/pokedex2.svg" />
   </head>
   <body class="headerFooterColor" onload="init()">
-    <div id="overlay" class="overlay">
-      <span class="spinner"></span>
-    </div>
-
-    <main class="mainDirection">
-      <header class="headerPkm">
-        <img src="pokedexText.svg" alt="Pokedex Logo" />
-        <div class="searchContainer">
-          <div class="tooltipWrapper">
-            <input
-              type="text"
-              id="pokemonInput"
-              class="pokemonInputField"
-              placeholder="Pokémon suchen..."
-              autocomplete="off"
-            />
-            <span class="tooltipText"
-              >Bitte mindestens 3 Buchstaben eingeben</span
-            >
-          </div>
-          <ul id="suggestionList" class="suggestionList"></ul>
+    <div class="contentLimiter">
+      <div id="overlay" class="overlay">
+        <span class="spinner"></span>
+      </div>
+      <div id="searchTextOverlay" class="overlay">
+        <div class="overlayCard">
+          <span class="colorWhite paddingSearchErr"
+            >Kein Pokémon mit diesem Namen oder dieser ID gefunden!</span
+          >
+          <button class="closeOverlay" onclick="closeOverlaySearchTextErr()">✖</button>
         </div>
-      </header>
-      <div id="status" class="status"></div>
-
-      <section
-        id="pokemonMasterCollector"
-        class="mainPokemonColor pokemonCollectorClass"
-      ></section>
-
-      <div class="buttonForMore">
-        <button type="button" id="loadBtn" class="btn">
-          weitere Pokémons laden
-        </button>
       </div>
-      <footer class="headerFooterPkmColor footerPkm">
-    <div class="companyNameLogo">
-      <img
-        src="assets/img/favicon/logo-2067396_1280.png"
-        class="personalLogo"
-        alt="personal Logo"
-      />
-      <div class="companyName">
-        <p class="companyFontBig">Stefan</p>
-        <p class="companyFontBig">Weidner</p>
-      </div>
-    </div>
-    <div class="companyFont">
-      <p>Stefan Weidner Design</p>
-    </div>
-  </footer>
-    </main>
+      <main class="mainDirection">
+        <header class="headerPkm">
+          <img src="pokedexText.svg" alt="Pokedex Logo" />
+          <div class="searchContainer">
+            <div class="tooltipWrapper">
+              <input
+                type="text"
+                id="pokemonInput"
+                class="pokemonInputField"
+                placeholder="Pokémon suchen..."
+                autocomplete="off"
+              />
+              <span class="tooltipText"
+                >Bitte mindestens 3 Buchstaben eingeben</span
+              >
+            </div>
+            <ul id="suggestionList" class="suggestionList"></ul>
+          </div>
+        </header>
+        <div id="status" class="status"></div>
 
-    <div id="pokemonOverlay" class="overlay hidden pokemonOverlay">
-      <div class="overlayCard">
-        <button id="closeOverlay" class="closeOverlay">✖</button>
-        <div id="overlayContent"></div>
-      </div>
-    </div>
-    
+        <section
+          id="pokemonMasterCollector"
+          class="mainPokemonColor pokemonCollectorClass"
+        ></section>
 
-    <script src="./script.js"></script>
-    <script src="./scripts/db.js"></script>
-    <script src="./scripts/template.js"></script>
+        <div class="buttonForMore">
+          <button type="button" id="loadBtn" class="btn">
+            weitere Pokémons laden
+          </button>
+        </div>
+        <footer class="headerFooterPkmColor footerPkm">
+          <div class="companyNameLogo">
+            <img
+              src="assets/img/favicon/logo-2067396_1280.png"
+              class="personalLogo"
+              alt="personal Logo"
+            />
+            <div class="companyName">
+              <p class="companyFontBig">Stefan</p>
+              <p class="companyFontBig">Weidner</p>
+            </div>
+          </div>
+          <div class="companyFont">
+            <p>Stefan Weidner Design</p>
+          </div>
+        </footer>
+      </main>
+
+      <div id="pokemonOverlay" class="overlay hidden pokemonOverlay">
+        <div class="overlayCard">
+          <button id="closeOverlay" class="closeOverlay">✖</button>
+          <div id="overlayContent"></div>
+        </div>
+      </div>
+
+      <script src="./script.js"></script>
+      <script src="./scripts/db.js"></script>
+      <script src="./scripts/template.js"></script>
+    </div>
   </body>
 </html>
