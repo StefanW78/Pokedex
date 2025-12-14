@@ -82,9 +82,18 @@
   padding: 20px;
   width: 90%;
   max-width: 400px;
+  height: 620px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
   position: relative;
   animation: fadeIn 0.3s ease-in-out;
+  height: 800px;
+}
+
+.overlayContent {
+  height: 800px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }
 
 .closeOverlay {
@@ -121,6 +130,7 @@
 
 .overlayTabContent {
   margin-top: 10px;
+  min-height: 200px;
 }
 
 .overlayTabContent.hidden {
@@ -180,7 +190,7 @@
   background-color: rgba(255, 255, 255, 0.2);
   height: 8px;
   border-radius: 4px;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 .statBar {
@@ -343,7 +353,7 @@
 .pokemonCards {
   min-width: 200px;
   min-height: 200px;
-  overflow: hidden;
+  /* overflow: hidden; */
   border-radius: 10px;
   border: 3px solid blue;
   background-color: var(--secondary-color);
@@ -454,6 +464,11 @@
 .tooltipWrapper {
   position: relative;
   display: inline-block;
+  width: 100%;
+}
+
+.pokemonInputField {
+  width: 100%;
 }
 
 .tooltipText {
@@ -532,3 +547,4 @@
 .navBtn:hover {
   background-color: #2980b9;
 }
+
