@@ -1,9 +1,9 @@
 let offset = 0;
 const limit = 20;
 
-let allPokemons = [];     
-let currentList = [];     
-let currentOpenIndex = -1; 
+let allPokemons = [];
+let currentList = [];
+let currentOpenIndex = -1;
 let currentOpenPokemon = null;
 const BASE_URL = "https://pokeapi.co/api/v2/pokemon?limit=20&offset=0";
 
@@ -54,7 +54,7 @@ function renderPokemonCards(pokemonData, append = false) {
   });
 
   const cards = container.querySelectorAll(".pokemonCards");
-  
+
   cards.forEach((card) => {
     const index = Number(card.dataset.index);
     card.addEventListener("click", () => openOverlayByIndex(index));
@@ -91,7 +91,6 @@ function openPrevPokemon() {
   openOverlayByIndex(currentOpenIndex - 1);
 }
 
-
 async function openPokemonOverlay(pokemon) {
   const { overlay, content, closeBtn } = getPokemonOverlayElements();
 
@@ -106,7 +105,6 @@ async function openPokemonOverlay(pokemon) {
   overlay.onclick = (event) => {
     if (event.target === overlay) closePokemonOverlay();
   };
-
 }
 
 function closePokemonOverlay() {
@@ -166,48 +164,16 @@ function initOverlayTabs() {
   );
   showTab(tabs[currentIndex]);
 
-leftBtn.onclick = () => {
-  const index = getPokemonIndex(currentOpenPokemon);
-  openOverlayByIndex(index - 1);
-};
+  leftBtn.onclick = () => {
+    const index = getPokemonIndex(currentOpenPokemon);
+    openOverlayByIndex(index - 1);
+  };
 
-rightBtn.onclick = () => {
-  const index = getPokemonIndex(currentOpenPokemon);
-  openOverlayByIndex(index + 1);
-};
-
-  
+  rightBtn.onclick = () => {
+    const index = getPokemonIndex(currentOpenPokemon);
+    openOverlayByIndex(index + 1);
+  };
 }
-
-/* function initOverlayTabs() {
-  const { tabs, tabButtons, tabContents, leftBtn, rightBtn } = getTabElements();
-  let currentTabIndex = 0;
-
-  const showTab = (tab) => {
-    tabButtons.forEach((b) =>
-      b.classList.toggle("active", b.dataset.tab === tab)
-    );
-    tabContents.forEach((c) =>
-      c.classList.toggle("hidden", c.id !== `tab-${tab}`)
-    );
-  };
-
-  const updateTab = (i) => {
-    currentTabIndex = (i + tabs.length) % tabs.length;
-    showTab(tabs[currentTabIndex]);
-  };
-
-  // Tab-Klicks
-  tabButtons.forEach((b, i) =>
-    b.addEventListener("click", () => updateTab(i))
-  );
-
-  // Nur Tabs wechseln (nicht Pokémon)
-  leftBtn.addEventListener("click", () => updateTab(currentTabIndex - 1));
-  rightBtn.addEventListener("click", () => updateTab(currentTabIndex + 1));
-
-  showTab(tabs[currentTabIndex]);
-} */
 
 async function loadEvolutionContainer(pokemon) {
   const evoContainer = document.getElementById("evolutionContainer");
