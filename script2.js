@@ -1,9 +1,9 @@
 let offset = 0;
 const limit = 20;
 
-let allPokemons = [];     // alle bisher geladenen Pokémons
-let currentList = [];     // aktuell angezeigte / gefilterte Liste
-let currentOpenIndex = -1; // Index des aktuell geöffneten Pokémons in currentList
+let allPokemons = [];     
+let currentList = [];     
+let currentOpenIndex = -1; 
 let currentOpenPokemon = null;
 const BASE_URL = "https://pokeapi.co/api/v2/pokemon?limit=20&offset=0";
 
@@ -15,20 +15,14 @@ function toggleOverlay() {
   document.getElementById("overlay").classList.toggle("displayFlex");
 }
 
-/* -------------------- Initialisierung -------------------- */
-
 async function init() {
   toggleOverlay();
   const firstBatch = await getAllPokemonDetails(BASE_URL);
   toggleOverlay();
-
   allPokemons = firstBatch || [];
   currentList = [...allPokemons];
-
   renderPokemonCards(currentList);
 }
-
-/* -------------------- Laden der Daten -------------------- */
 
 async function getAllPokemonDetails(url) {
   try {
@@ -50,8 +44,6 @@ async function getAllPokemonDetails(url) {
   }
 }
 
-/* -------------------- Karten-Rendering -------------------- */
-
 function renderPokemonCards(pokemonData, append = false) {
   const container = document.getElementById("pokemonMasterCollector");
   if (!append) container.innerHTML = "";
@@ -61,7 +53,6 @@ function renderPokemonCards(pokemonData, append = false) {
     container.insertAdjacentHTML("beforeend", cardHTML);
   });
 
-  // Klick-Handler auf Basis der currentList
   const cards = container.querySelectorAll(".pokemonCards");
   
   cards.forEach((card) => {
@@ -74,8 +65,6 @@ function getPokemonCardTemplate(index, pokemon) {
   const icon = typeIcons[pokemon.type] || "";
   return getPokemonCards(index, pokemon, icon); // aus template.js
 }
-
-/* -------------------- Overlay öffnen / schließen -------------------- */
 
 function getPokemonOverlayElements() {
   const overlay = document.getElementById("pokemonOverlay");
@@ -106,7 +95,7 @@ function openPrevPokemon() {
 async function openPokemonOverlay(pokemon) {
   const { overlay, content, closeBtn } = getPokemonOverlayElements();
 
-  getPokemonOverlayTemplate(pokemon, content); // aus template.js
+  getPokemonOverlayTemplate(pokemon, content);
   initOverlayTabs();
   loadEvolutionContainer(pokemon);
   buttonHandling();
@@ -123,8 +112,6 @@ async function openPokemonOverlay(pokemon) {
 function closePokemonOverlay() {
   document.getElementById("pokemonOverlay").classList.add("hidden");
 }
-
-/* -------------------- Tabs + Stat-Balken -------------------- */
 
 function switchTab(tabName) {
   document
@@ -222,8 +209,6 @@ rightBtn.onclick = () => {
   showTab(tabs[currentTabIndex]);
 } */
 
-/* -------------------- Evolution (nutzt lokale Daten) -------------------- */
-
 async function loadEvolutionContainer(pokemon) {
   const evoContainer = document.getElementById("evolutionContainer");
 
@@ -243,8 +228,6 @@ async function loadEvolutionContainer(pokemon) {
     .join("");
 }
 
-/* -------------------- Suche in geladenen Pokémons -------------------- */
-
 function filterLoadedPokemons(query) {
   const lowerQuery = query.toLowerCase().trim();
   if (!lowerQuery) {
@@ -260,33 +243,23 @@ function filterLoadedPokemons(query) {
   renderPokemonCards(filtered);
 }
 
-/* -------------------- "Weitere Pokémons laden"-Button -------------------- */
-
 document.getElementById("loadBtn").addEventListener("click", async (e) => {
   const btn = e.target;
   btn.disabled = true;
   btn.textContent = "Lädt...";
-
   offset += limit;
   const newUrl = `https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`;
-
   toggleOverlay();
   const newPokemons = await getAllPokemonDetails(newUrl);
   toggleOverlay();
-
   allPokemons.push(...newPokemons);
-
-  // Nur anhängen, wenn kein Filter aktiv ist
   if (!document.getElementById("pokemonInput").value.trim()) {
     currentList = [...allPokemons];
     renderPokemonCards(newPokemons, true);
   }
-
   btn.disabled = false;
   btn.textContent = "weitere Pokémons laden";
 });
-
-/* -------------------- Fehlermeldungs-Overlay -------------------- */
 
 function closeOverlaySearchTextErr() {
   toggleOverlaySearchTextErr();
@@ -301,8 +274,6 @@ function closeOverlaySearchTextErrArea() {
   });
 }
 
-/* -------------------- DOMContentLoaded: Suche & Events -------------------- */
-
 document.addEventListener("DOMContentLoaded", () => {
   closeOverlaySearchTextErrArea();
 
@@ -313,8 +284,6 @@ document.addEventListener("DOMContentLoaded", () => {
   input.addEventListener("input", () => {
     const query = input.value.toLowerCase().trim();
     suggestionList.innerHTML = "";
-
-    // Button steuern
     if (!query) {
       loadBtn.style.display = "";
       loadBtn.disabled = false;
@@ -325,21 +294,16 @@ document.addEventListener("DOMContentLoaded", () => {
       loadBtn.style.display = "none";
       loadBtn.disabled = true;
     }
-
     if (query.length < 3) return;
-
     const filteredPokemons = allPokemons.filter((pokemon) =>
       pokemon.name.toLowerCase().includes(query)
     );
-
     currentList = filteredPokemons;
-
     if (filteredPokemons.length === 0) {
       suggestionList.innerHTML = "<li>Kein Treffer</li>";
       renderPokemonCards([]);
       return;
     }
-
     filteredPokemons.forEach((pokemon, index) => {
       const li = document.createElement("li");
       li.textContent = pokemon.name;
@@ -351,29 +315,23 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       suggestionList.appendChild(li);
     });
-
     renderPokemonCards(filteredPokemons);
   });
 
   input.addEventListener("keydown", (event) => {
     if (event.key !== "Enter") return;
     event.preventDefault();
-
     const query = input.value.toLowerCase().trim();
     if (!query) return;
-
     const filtered = allPokemons.filter((p) =>
       p.name.toLowerCase().includes(query)
     );
-
     if (!filtered.length) {
       toggleOverlaySearchTextErr();
       return;
     }
-
     currentList = filtered;
     renderPokemonCards(filtered);
-
     if (filtered.length === 1) {
       openOverlayByIndex(0);
     }
