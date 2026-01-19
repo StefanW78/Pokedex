@@ -28,7 +28,6 @@ async function getAllPokemonDetails(url) {
   try {
     const response = await fetch(url);
     const { results } = await response.json();
-
     const detailedPokemons = await Promise.all(
       results.map(async (pokemon) => {
         const detailResponse = await fetch(pokemon.url);
@@ -36,7 +35,6 @@ async function getAllPokemonDetails(url) {
         return dataInformation(data); // aus db.js
       })
     );
-
     return detailedPokemons;
   } catch (error) {
     console.error("Pokemondatenbank nicht erreichbar: ", error);
@@ -47,14 +45,11 @@ async function getAllPokemonDetails(url) {
 function renderPokemonCards(pokemonData, append = false) {
   const container = document.getElementById("pokemonMasterCollector");
   if (!append) container.innerHTML = "";
-
   pokemonData.forEach((pokemon, index) => {
     const cardHTML = getPokemonCardTemplate(index, pokemon);
     container.insertAdjacentHTML("beforeend", cardHTML);
   });
-
   const cards = container.querySelectorAll(".pokemonCards");
-
   cards.forEach((card) => {
     const index = Number(card.dataset.index);
     card.addEventListener("click", () => openOverlayByIndex(index));
@@ -93,14 +88,12 @@ function openPrevPokemon() {
 
 async function openPokemonOverlay(pokemon) {
   const { overlay, content, closeBtn } = getPokemonOverlayElements();
-
   getPokemonOverlayTemplate(pokemon, content);
   initOverlayTabs();
   loadEvolutionContainer(pokemon);
   buttonHandling();
   currentOpenPokemon = pokemon;
   overlay.classList.remove("hidden");
-
   closeBtn.onclick = () => closePokemonOverlay();
   overlay.onclick = (event) => {
     if (event.target === overlay) closePokemonOverlay();
@@ -125,12 +118,12 @@ function switchTab(tabName) {
 }
 
 function buttonHandling() {
-  document.querySelectorAll(".tabBtn").forEach((btn) => {
-    btn.addEventListener("click", () => switchTab(btn.dataset.tab));
-  });
+  applyStatBars();
+}
 
+function applyStatBars() {
   document.querySelectorAll(".statBar").forEach((bar) => {
-    const value = bar.dataset.value;
+    const value = Number(bar.dataset.value) || 0;
     bar.style.transform = `scaleX(${value / 200})`;
   });
 }
@@ -146,9 +139,17 @@ function getTabElements() {
 }
 
 function initOverlayTabs() {
-  const { tabs, tabButtons, tabContents, leftBtn, rightBtn } = getTabElements();
-  let currentIndex = 0;
-  const showTab = (tab) => {
+  const els = getTabElements();
+  const state = { tabIndex: 0 };
+
+  const showTab = createShowTab(els.tabButtons, els.tabContents);
+  wireTabButtons(els.tabs, els.tabButtons, state, showTab);
+  wirePokemonNavArrows(els.leftBtn, els.rightBtn);
+  showTab(els.tabs[state.tabIndex]);
+}
+
+function createShowTab(tabButtons, tabContents) {
+  return (tab) => {
     tabButtons.forEach((b) =>
       b.classList.toggle("active", b.dataset.tab === tab)
     );
@@ -156,40 +157,41 @@ function initOverlayTabs() {
       c.classList.toggle("hidden", c.id !== `tab-${tab}`)
     );
   };
-  const updateTab = (i) => showTab(tabs[(i + tabs.length) % tabs.length]);
-  leftBtn.addEventListener("click", () => updateTab(--currentIndex));
-  rightBtn.addEventListener("click", () => updateTab(++currentIndex));
-  tabButtons.forEach((b, i) =>
-    b.addEventListener("click", () => ((currentIndex = i), showTab(tabs[i])))
-  );
-  showTab(tabs[currentIndex]);
+}
 
-  leftBtn.onclick = () => {
-    const index = getPokemonIndex(currentOpenPokemon);
-    openOverlayByIndex(index - 1);
+function wireTabButtons(tabs, tabButtons, state, showTab) {
+  tabButtons.forEach((b, i) => {
+    b.onclick = () => {
+      state.tabIndex = i;
+      showTab(tabs[i]);
+    };
+  });
+}
+
+function wirePokemonNavArrows(leftBtn, rightBtn) {
+  leftBtn.onclick = (e) => {
+    e.stopPropagation();
+    openOverlayByIndex(currentOpenIndex - 1);
   };
-
-  rightBtn.onclick = () => {
-    const index = getPokemonIndex(currentOpenPokemon);
-    openOverlayByIndex(index + 1);
+  rightBtn.onclick = (e) => {
+    e.stopPropagation();
+    openOverlayByIndex(currentOpenIndex + 1);
   };
 }
 
 async function loadEvolutionContainer(pokemon) {
   const evoContainer = document.getElementById("evolutionContainer");
-
   if (!pokemon.evolution || pokemon.evolution.length === 0) {
     evoContainer.innerHTML = "<p>Keine Evolution Chain gefunden.</p>";
     return;
   }
-
   evoContainer.innerHTML = pokemon.evolution
     .map((evo, index) => {
       const arrow =
         index < pokemon.evolution.length - 1
           ? '<span class="evoArrow"> &gt;&gt; </span>'
           : "";
-      return getEvolutionStageTemplate(evo, arrow); // aus template.js
+      return getEvolutionStageTemplate(evo, arrow); 
     })
     .join("");
 }
@@ -201,7 +203,6 @@ function filterLoadedPokemons(query) {
     renderPokemonCards(currentList);
     return;
   }
-
   const filtered = allPokemons.filter((pokemon) =>
     pokemon.name.toLowerCase().includes(lowerQuery)
   );
@@ -241,12 +242,115 @@ function closeOverlaySearchTextErrArea() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  closeOverlaySearchTextErrArea();
+  setupSearchUI();
+});
 
+function setupSearchUI() {
+  closeOverlaySearchTextErrArea();
+  const els = getSearchEls();
+  wireInputEvents(els);
+  wireOutsideClick(els);
+}
+
+function getSearchEls() {
+  return {
+    input: document.getElementById("pokemonInput"),
+    suggestionList: document.getElementById("suggestionList"),
+    loadBtn: document.getElementById("loadBtn"),
+  };
+}
+
+function wireInputEvents(els) {
+  els.input.addEventListener("input", () => onSearchInput(els));
+  els.input.addEventListener("keydown", (e) => onSearchEnter(e, els));
+}
+
+function onSearchInput({ input, suggestionList, loadBtn }) {
+  const query = getQuery(input);
+  clearSuggestions(suggestionList);
+  if (handleEmptyQuery(query, loadBtn, suggestionList)) return;
+  if (query.length < 3) return;
+  const filtered = getFilteredPokemons(query);
+  currentList = filtered;
+  if (renderNoResultsIfNeeded(filtered, suggestionList)) return;
+  fillSuggestions(filtered, { input, suggestionList });
+  renderPokemonCards(filtered);
+}
+
+function handleEmptyQuery(query, loadBtn, suggestionList) {
+  if (query) return setLoadBtnState(loadBtn, false);
+  setLoadBtnState(loadBtn, true);
+  clearSuggestions(suggestionList);
+  currentList = [...allPokemons];
+  renderPokemonCards(currentList);
+  return true;
+}
+
+function setLoadBtnState(loadBtn, isVisible) {
+  loadBtn.style.display = isVisible ? "" : "none";
+  loadBtn.disabled = !isVisible;
+  return !isVisible; // true wenn query NICHT leer ist
+}
+
+function renderNoResultsIfNeeded(filtered, suggestionList) {
+  if (filtered.length) return false;
+  suggestionList.innerHTML = "<li>Kein Treffer</li>";
+  renderPokemonCards([]);
+  return true;
+}
+
+function fillSuggestions(filtered, { input, suggestionList }) {
+  filtered.forEach((pokemon, index) => {
+    const li = document.createElement("li");
+    li.textContent = pokemon.name;
+    li.onclick = () => onSuggestionClick(pokemon.name, index, filtered, { input, suggestionList });
+    suggestionList.appendChild(li);
+  });
+}
+
+function onSuggestionClick(name, index, filtered, { input, suggestionList }) {
+  input.value = name;
+  suggestionList.innerHTML = "";
+  currentList = filtered;
+  openOverlayByIndex(index);
+}
+
+function onSearchEnter(event, { input, suggestionList }) {
+  if (event.key !== "Enter") return;
+  event.preventDefault();
+  const query = getQuery(input);
+  if (!query) return;
+  const filtered = getFilteredPokemons(query);
+  if (!filtered.length) return toggleOverlaySearchTextErr();
+  currentList = filtered;
+  clearSuggestions(suggestionList);
+  renderPokemonCards(filtered);
+  if (filtered.length === 1) openOverlayByIndex(0);
+}
+
+function wireOutsideClick({ suggestionList }) {
+  document.addEventListener("click", (event) => {
+    if (!event.target.closest(".searchContainer")) clearSuggestions(suggestionList);
+  });
+}
+
+function getQuery(input) {
+  return input.value.toLowerCase().trim();
+}
+
+function clearSuggestions(list) {
+  list.innerHTML = "";
+}
+
+function getFilteredPokemons(query) {
+  return allPokemons.filter((p) => p.name.toLowerCase().includes(query));
+}
+
+/* document.addEventListener("DOMContentLoaded", () => {
+  closeOverlaySearchTextErrArea();
   const input = document.getElementById("pokemonInput");
   const suggestionList = document.getElementById("suggestionList");
   const loadBtn = document.getElementById("loadBtn");
-
   input.addEventListener("input", () => {
     const query = input.value.toLowerCase().trim();
     suggestionList.innerHTML = "";
@@ -270,6 +374,7 @@ document.addEventListener("DOMContentLoaded", () => {
       renderPokemonCards([]);
       return;
     }
+
     filteredPokemons.forEach((pokemon, index) => {
       const li = document.createElement("li");
       li.textContent = pokemon.name;
@@ -308,7 +413,7 @@ document.addEventListener("DOMContentLoaded", () => {
       suggestionList.innerHTML = "";
     }
   });
-});
+}); */
 
 function getPokemonIndex(pokemon) {
   return allPokemons.findIndex((p) => p.id === pokemon.id);
