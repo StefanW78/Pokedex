@@ -72,10 +72,6 @@
   display: none;
 }
 
-.hidden {
-  display: none !important;
-}
-
 .overlayCard {
   background-color: var(--secondary-color);
   border-radius: 15px;
@@ -544,3 +540,6 @@
   background-color: #2980b9;
 }
 
+.hidden {
+  display: none;
+}

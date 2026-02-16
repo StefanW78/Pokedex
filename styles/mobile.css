@@ -9,7 +9,7 @@
   }
 }
 
-@media (max-width: 500px){
+@media (max-width: 565px){
     .headerPkm {
         flex-direction: column;
     }
