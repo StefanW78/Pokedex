@@ -174,19 +174,22 @@ function wirePokemonNavArrows(leftBtn, rightBtn) {
   };
 }
 
-async function loadEvolutionContainer(pokemon) {
+function loadEvolutionContainer(pokemon) {
   const evoContainer = document.getElementById("evolutionContainer");
-  if (!pokemon.evolution || pokemon.evolution.length === 0) {
-    evoContainer.innerHTML = "<p>Keine Evolution Chain gefunden.</p>";
-    return;
+  evoContainer.innerHTML = getEvolutionHTML(pokemon);
+}
+
+function getEvolutionHTML(pokemon) {
+  if (!pokemon.evolution?.length) {
+    return "<p>Keine Evolution Chain gefunden.</p>";
   }
-  evoContainer.innerHTML = pokemon.evolution
+  return pokemon.evolution
     .map((evo, index) => {
       const arrow =
         index < pokemon.evolution.length - 1
           ? '<span class="evoArrow"> &gt;&gt; </span>'
           : "";
-      return getEvolutionStageTemplate(evo, arrow); 
+      return getEvolutionStageTemplate(evo, arrow);
     })
     .join("");
 }
