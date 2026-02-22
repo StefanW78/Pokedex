@@ -91,7 +91,7 @@ function getPokemonCards(index, pokemon, icon) {
 }
 
 function getPokemonOverlayTemplate(pokemon, content) {
-  content.innerHTML = `
+  return `
     <div class="overlayHeader">
       <header class="headerPkmCard">
         <div>#${pokemon.id}</div>

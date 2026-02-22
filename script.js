@@ -1,11 +1,11 @@
 let offset = 0;
 const limit = 20;
-
+const apiCollector = new Map();
 let allPokemons = [];
 let currentList = [];
 let currentOpenIndex = -1;
 let currentOpenPokemon = null;
-const BASE_URL = "https://pokeapi.co/api/v2/pokemon?limit=20&offset=0";
+let pokeUrl = `https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`;
 
 function toggleOverlaySearchTextErr() {
   document.getElementById("searchTextOverlay").classList.toggle("displayFlex");
@@ -15,26 +15,18 @@ function toggleOverlay() {
   document.getElementById("overlay").classList.toggle("displayFlex");
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+  setupSearchUI();
+  init();
+});
+
 async function init() {
   toggleOverlay();
-  const firstBatch = await getAllPokemonDetails(BASE_URL);
+  const firstBatch = await getAllPokemonDetails(pokeUrl);
   toggleOverlay();
   allPokemons = firstBatch || [];
   currentList = [...allPokemons];
   renderPokemonCards(currentList);
-}
-
-async function getAllPokemonDetails(url) {
-  try {
-    const { results } = await fetchJsonCached(url);
-    return Promise.all(results.map(async (p) => {
-      const data = await fetchJsonCached(p.url);
-      return dataInformation(data);
-    }));
-  } catch (error) {
-    console.error("Pokemondatenbank nicht erreichbar:", error);
-    return [];
-  }
 }
 
 function renderPokemonCards(pokemonData, append = false) {
@@ -53,7 +45,7 @@ function renderPokemonCards(pokemonData, append = false) {
 
 function getPokemonCardTemplate(index, pokemon) {
   const icon = typeIcons[pokemon.type] || "";
-  return getPokemonCards(index, pokemon, icon); // aus template.js
+  return getPokemonCards(index, pokemon, icon);
 }
 
 function getPokemonOverlayElements() {
@@ -71,21 +63,11 @@ function openOverlayByIndex(index) {
   openPokemonOverlay(pokemon);
 }
 
-function openNextPokemon() {
-  if (!currentList.length) return;
-  openOverlayByIndex(currentOpenIndex + 1);
-}
-
-function openPrevPokemon() {
-  if (!currentList.length) return;
-  openOverlayByIndex(currentOpenIndex - 1);
-}
-
 async function openPokemonOverlay(pokemon) {
   const { overlay, content, closeBtn } = getPokemonOverlayElements();
-  getPokemonOverlayTemplate(pokemon, content);
+  content.innerHTML = getPokemonOverlayTemplate(pokemon, content);
   initOverlayTabs();
-  loadEvolutionContainer(pokemon);
+  await loadEvolutionContainer(pokemon);
   buttonHandling();
   currentOpenPokemon = pokemon;
   overlay.classList.remove("hidden");
@@ -97,19 +79,6 @@ async function openPokemonOverlay(pokemon) {
 
 function closePokemonOverlay() {
   document.getElementById("pokemonOverlay").classList.add("hidden");
-}
-
-function switchTab(tabName) {
-  document
-    .querySelectorAll(".tabBtn")
-    .forEach((btn) => btn.classList.remove("active"));
-
-  document
-    .querySelectorAll(".overlayTabContent")
-    .forEach((tab) => tab.classList.add("hidden"));
-
-  document.querySelector(`[data-tab='${tabName}']`).classList.add("active");
-  document.getElementById(`tab-${tabName}`).classList.remove("hidden");
 }
 
 function buttonHandling() {
@@ -146,10 +115,10 @@ function initOverlayTabs() {
 function createShowTab(tabButtons, tabContents) {
   return (tab) => {
     tabButtons.forEach((b) =>
-      b.classList.toggle("active", b.dataset.tab === tab)
+      b.classList.toggle("active", b.dataset.tab === tab),
     );
     tabContents.forEach((c) =>
-      c.classList.toggle("hidden", c.id !== `tab-${tab}`)
+      c.classList.toggle("hidden", c.id !== `tab-${tab}`),
     );
   };
 }
@@ -174,9 +143,17 @@ function wirePokemonNavArrows(leftBtn, rightBtn) {
   };
 }
 
-function loadEvolutionContainer(pokemon) {
+async function loadEvolutionContainer(pokemon) {
   const evoContainer = document.getElementById("evolutionContainer");
-  evoContainer.innerHTML = getEvolutionHTML(pokemon);
+  if (!evoContainer) return;
+  evoContainer.innerHTML = "<p>Lade Evolution Chain...</p>";
+  try {
+    await ensureEvolutionLoaded(pokemon);
+    evoContainer.innerHTML = getEvolutionHTML(pokemon);
+  } catch (err) {
+    console.error("Evolution konnte nicht geladen werden:", err);
+    evoContainer.innerHTML = "<p>Evolution konnte nicht geladen werden.</p>";
+  }
 }
 
 function getEvolutionHTML(pokemon) {
@@ -194,57 +171,37 @@ function getEvolutionHTML(pokemon) {
     .join("");
 }
 
-function filterLoadedPokemons(query) {
-  const lowerQuery = query.toLowerCase().trim();
-  if (!lowerQuery) {
-    currentList = [...allPokemons];
-    renderPokemonCards(currentList);
-    return;
-  }
-  const filtered = allPokemons.filter((pokemon) =>
-    pokemon.name.toLowerCase().includes(lowerQuery)
-  );
-  currentList = filtered;
-  renderPokemonCards(filtered);
-}
-
 document.getElementById("loadBtn").addEventListener("click", async (e) => {
   const btn = e.target;
   btn.disabled = true;
   btn.textContent = "Lädt...";
-  try {
-    await handleNewPokemons();
-  } finally {
-    btn.disabled = false;
-    btn.textContent = "weitere Pokémons laden";
-  }
+  await handleNewPokemons();
+
+  btn.disabled = false;
+  btn.textContent = "weitere Pokémons laden";
 });
 
 function increaseLimit() {
   offset += limit;
-  const newUrl = `https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`;
-  return newUrl;
+  pokeUrl = `https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`;
+  return pokeUrl;
 }
 
-async function getNewPokemons(newUrl) {
+async function getNewPokemons(pokeUrl) {
   toggleOverlay();
-  const newPokemons = await getAllPokemonDetails(newUrl);
+  const newPokemons = await getAllPokemonDetails(pokeUrl);
   toggleOverlay();
   return newPokemons;
 }
 
 async function handleNewPokemons() {
-  const newUrl = increaseLimit();
-  const newPokemons = await getNewPokemons(newUrl);
+  pokeUrl = increaseLimit();
+  const newPokemons = await getNewPokemons(pokeUrl);
   allPokemons.push(...newPokemons);
   if (!document.getElementById("pokemonInput").value.trim()) {
     currentList = [...allPokemons];
     renderPokemonCards(newPokemons, true);
   }
-}
-
-function closeOverlaySearchTextErr() {
-  toggleOverlaySearchTextErr();
 }
 
 function closeOverlaySearchTextErrArea() {
@@ -255,10 +212,6 @@ function closeOverlaySearchTextErrArea() {
     }
   });
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-  setupSearchUI();
-});
 
 function setupSearchUI() {
   closeOverlaySearchTextErrArea();
@@ -304,7 +257,7 @@ function handleEmptyQuery(query, loadBtn, suggestionList) {
 function setLoadBtnState(loadBtn, isVisible) {
   loadBtn.style.display = isVisible ? "" : "none";
   loadBtn.disabled = !isVisible;
-  return !isVisible; 
+  return !isVisible;
 }
 
 function renderNoResultsIfNeeded(filtered, suggestionList) {
@@ -318,7 +271,11 @@ function fillSuggestions(filtered, { input, suggestionList }) {
   filtered.forEach((pokemon, index) => {
     const li = document.createElement("li");
     li.textContent = pokemon.name;
-    li.onclick = () => onSuggestionClick(pokemon.name, index, filtered, { input, suggestionList });
+    li.onclick = () =>
+      onSuggestionClick(pokemon.name, index, filtered, {
+        input,
+        suggestionList,
+      });
     suggestionList.appendChild(li);
   });
 }
@@ -345,7 +302,8 @@ function onSearchEnter(event, { input, suggestionList }) {
 
 function wireOutsideClick({ suggestionList }) {
   document.addEventListener("click", (event) => {
-    if (!event.target.closest(".searchContainer")) clearSuggestions(suggestionList);
+    if (!event.target.closest(".searchContainer"))
+      clearSuggestions(suggestionList);
   });
 }
 
@@ -359,8 +317,4 @@ function clearSuggestions(list) {
 
 function getFilteredPokemons(query) {
   return allPokemons.filter((p) => p.name.toLowerCase().includes(query));
-}
-
-function getPokemonIndex(pokemon) {
-  return allPokemons.findIndex((p) => p.id === pokemon.id);
 }

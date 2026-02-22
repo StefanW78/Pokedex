@@ -1,21 +1,32 @@
-const jsonCache = new Map();
+async function getAllPokemonDetails(url) {
+  try {
+    const { results } = await fetchApiCollectored(url);
+    return Promise.all(results.map(async (p) => {
+      const data = await fetchApiCollectored(p.url);
+      return dataInformation(data);
+    }));
+  } catch (error) {
+    console.error("Pokemondatenbank nicht erreichbar:", error);
+    return [];
+  }
+}
 
-async function fetchJsonCached(url) {
-  if (jsonCache.has(url)) return jsonCache.get(url);
+async function fetchApiCollectored(url) {
+  if (apiCollector.has(url)) return apiCollector.get(url);
   const promise = fetch(url).then(r => {
     if (!r.ok) throw new Error(`HTTP ${r.status} for ${url}`);
     return r.json();
   });
-  jsonCache.set(url, promise);
+  apiCollector.set(url, promise);
   return promise;
 }
 
   async function getSpeciesData(data) {
-  return fetchJsonCached(data.species.url);
+  return fetchApiCollectored(data.species.url);
 }
 
 async function getEvolutionData(speciesData) {
-  return fetchJsonCached(speciesData.evolution_chain.url);
+  return fetchApiCollectored(speciesData.evolution_chain.url);
 }
 
 function extractEvolutionNames(evoData) {
@@ -31,7 +42,7 @@ function extractEvolutionNames(evoData) {
 async function getEvolutionDetails(names) {
   const details = await Promise.all(
     names.map(async (name) => {
-      const d = await fetchJsonCached(`https://pokeapi.co/api/v2/pokemon/${name}`);
+      const d = await fetchApiCollectored(`https://pokeapi.co/api/v2/pokemon/${name}`);
       return { name, image: d.sprites.other["official-artwork"].front_default };
     })
   );
