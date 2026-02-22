@@ -64,7 +64,7 @@ function openOverlayByIndex(index) {
 }
 
 async function openPokemonOverlay(pokemon) {
-  const { overlay, content, closeBtn } = getPokemonOverlayElements();
+  const { overlay, content, closeBtn} = getPokemonOverlayElements();
   content.innerHTML = getPokemonOverlayTemplate(pokemon, content);
   initOverlayTabs();
   await loadEvolutionContainer(pokemon);
@@ -79,6 +79,20 @@ async function openPokemonOverlay(pokemon) {
 
 function closePokemonOverlay() {
   document.getElementById("pokemonOverlay").classList.add("hidden");
+}
+
+function closeSearchTextOverlay() {
+  const overlay = document.getElementById("searchTextOverlay");
+  overlay.classList.remove("displayFlex"); 
+  overlay.classList.add("hidden");
+  document.getElementById("pokemonInput").value = "";
+  document.getElementById("pokemonInput").focus(); 
+}
+
+function openSearchTextOverlay() {
+  const overlay = document.getElementById("searchTextOverlay");
+  overlay.classList.remove("hidden");
+  overlay.classList.add("displayFlex");
 }
 
 function buttonHandling() {
@@ -215,6 +229,8 @@ function closeOverlaySearchTextErrArea() {
 
 function setupSearchUI() {
   closeOverlaySearchTextErrArea();
+  const closeBtn2 = document.getElementById("closeOverlay2");
+  closeBtn2.addEventListener("click", closeSearchTextOverlay);
   const els = getSearchEls();
   wireInputEvents(els);
   wireOutsideClick(els);
@@ -293,7 +309,7 @@ function onSearchEnter(event, { input, suggestionList }) {
   const query = getQuery(input);
   if (!query) return;
   const filtered = getFilteredPokemons(query);
-  if (!filtered.length) return toggleOverlaySearchTextErr();
+  if (!filtered.length) return openSearchTextOverlay();
   currentList = filtered;
   clearSuggestions(suggestionList);
   renderPokemonCards(filtered);
