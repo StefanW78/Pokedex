@@ -334,3 +334,4 @@ function clearSuggestions(list) {
 function getFilteredPokemons(query) {
   return allPokemons.filter((p) => p.name.toLowerCase().includes(query));
 }
+
